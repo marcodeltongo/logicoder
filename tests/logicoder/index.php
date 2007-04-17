@@ -12,7 +12,7 @@
 /*
     Include the test library.
 */
-require(dirname(__FILE__) . '/../../logicoder/libraries/test.php');
+require('../../logicoder/libraries/test.php');
 
 /*
     Get a new instance.
