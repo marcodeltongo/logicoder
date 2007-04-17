@@ -1,6 +1,6 @@
 <?php
 /**
- * Logicoder Web Application Framework
+ * Logicoder Web Application Framework - Testing library
  *
  * @package     Logicoder
  * @copyright   Copyright (c) 1999-2007, Marco Del Tongo
@@ -16,7 +16,7 @@
  */
 if (!defined('PHP_CLI'))
 {
-    define('PHP_CLI', PHP_SAPI == 'cli');
+    define('PHP_CLI', (PHP_SAPI == 'cli'));
 }
 
 // -----------------------------------------------------------------------------
@@ -553,7 +553,7 @@ class Logicoder_Test
     /**
      * Output diagnostic line(s)
      *
-     * @param   string or array
+     * @param   mixed   $sMessage   A string or an array containing the message
      */
     public function diag ( $sMessage )
     {
@@ -1004,7 +1004,7 @@ class Logicoder_Test
      * @param   string  The message to print.
      * @param   integer How many ?
      */
-    public function skip ( $sMessage = '', $nHowMany = 0 )
+    public function skip ( $sMessage = '', $nHowMany = 1 )
     {
         if ($nHowMany < 0)
         {
@@ -1043,7 +1043,7 @@ class Logicoder_Test
      * @param   string
      * @param   integer
      */
-    public function todo ( $sMessage = '', $nHowMany = 0 )
+    public function todo ( $sMessage = '', $nHowMany = 1 )
     {
         if ($nHowMany < 0)
         {
@@ -1060,7 +1060,7 @@ class Logicoder_Test
      * @param   string
      * @param   integer
      */
-    public function todo_skip ( $sMessage = '', $nHowMany = 0 )
+    public function todo_skip ( $sMessage = '', $nHowMany = 1 )
     {
         $this->todo($sMessage, $nHowMany);
         $this->skip('', $nHowMany);
@@ -1279,8 +1279,9 @@ class Logicoder_Test
      * Run a single test
      *
      * @param   string  $sPathname  The full path to the test file
+     * @param   string  $sRelPath   Relative path to prefix to links
      */
-    public function run ( $sPathname )
+    public function run ( $sPathname, $sRelPath = '' )
     {
         if ($this->__skip())
         {
@@ -1297,6 +1298,7 @@ class Logicoder_Test
         /*
             Switch to test directory
         */
+        $oldir = getcwd();
         chdir(realpath(dirname($sPathname)));
         /*
             Launch the test
@@ -1307,7 +1309,7 @@ class Logicoder_Test
 
         if (!PHP_CLI)
         {
-            $sPathname = "<a href='$sPathname'>&raquo; $sPathname</a>";
+            $sPathname = "<a href='$sRelPath$sPathname'>&raquo; $sRelPath$sPathname</a>";
         }
         /*
             Export the results
@@ -1334,60 +1336,66 @@ class Logicoder_Test
                 */
                 $this->fail($sPathname, ((PHP_CLI) ? '#   ' : '<br />&raquo; ') . "$nExitCode tests failed");
         }
+        chdir($oldir);
         return $nExitCode;
     }
 
     /**
      * Run all tests in a directory
      *
-     * @param   string  $sDirName
-     * @param   regex   $rFilter
-     * @param   array   $aExcept
+     * @param   string  $sDirname   Directory to scan for tests
+     * @param   regex   $rFilter    RegEx filter to apply to filenames
+     * @param   array   $aExcept    Array of files to skip
+     * @param   boolean $bRecursive Whether is a recursive call or not
      */
-    public function all_in ( $sDirname = '.', $rFilter = '|_t.php|', $aExcept = array() )
+    public function all_in ( $sDirname = '.', $rFilter = '|_t.php|', $aExcept = array(), $bRecursive = false )
     {
         /*
-            Prepare the directory iterator
+            Get the directory
         */
-        $iDir = new DirectoryIterator($sDirname);
+        $dir = opendir($sDirname);
         /*
             Switch to tests directory
         */
+        $oldir = getcwd();
         chdir(realpath($sDirname));
         /*
             Iterate
         */
-        $bOk = true;
-        foreach ($iDir as $iTest)
+        while ($sFile = readdir($dir))
         {
-            /*
-                Skip if not a file or isn't readable
-            */
-            if (!$iTest->isFile())
+            if (is_dir($sFile))
             {
+                /*
+                    Descend if it's a sub-directory
+                */
+                if (!stristr($sFile, "."))
+                {
+                    $this->all_in($sFile, $rFilter, $aExcept, true);
+                }
+                /*
+                    Skip if not a file nor a directory or isn't readable
+                */
                 continue;
             }
             /*
-                Get the filename
-            */
-            $sFN = $iTest->getFilename();
-            /*
                 Apply filters
             */
-            if (in_array($sFN, $aExcept) or !preg_match($rFilter, $sFN))
+            if (in_array($sFile, $aExcept) or !preg_match($rFilter, $sFile))
             {
                 continue;
             }
             /*
                 Run the test file
             */
-            $bOk = $this->run($sFN);
+            $this->run($sFile, ($bRecursive) ? $sDirname.'/' : '');
         }
-        return $bOk;
+        closedir($dir);
+        chdir($oldir);
     }
 
     /**
-     * Exit due to major problem
+     * Exit due to some serious problem
      *
      * @param   string  $sReason
      */

@@ -19,7 +19,7 @@ define('LOGICODER_SELF_TEST', true);
 /*
     Include the test library.
 */
-require(dirname(__FILE__) . '/../../logicoder/libraries/test.php');
+require('../../../logicoder/libraries/test.php');
 
 /*
     Get a new instance.
@@ -174,9 +174,3 @@ $t->ok(true);
 */
 $t->diag('PHP');
 $t->php('php5 ');
-
-/*
-    RUN
-*/
-$t->diag('RUN');
-$t->run('example_t.php');
