@@ -11,7 +11,7 @@
 // -----------------------------------------------------------------------------
 
 /**
- * Simply an overloaded array
+ * Simply an overloaded array.
  *
  * @package     Logicoder
  * @subpackage  Core
@@ -41,8 +41,8 @@ class Logicoder_OverArray implements ArrayAccess
     /**
      * Overload magic property setter method.
      *
-     * @param   string  $sKey   The name/key string
-     * @param   mixed   $mValue The value
+     * @param   string  $sKey       The name/key string
+     * @param   mixed   $mValue     The value
      */
     protected function __set ( $sKey, $mValue )
     {
@@ -52,7 +52,7 @@ class Logicoder_OverArray implements ArrayAccess
     /**
      * Overload magic property getter method.
      *
-     * @param   string  $sKey   The name/key string
+     * @param   string  $sKey       The name/key string
      */
     protected function __get ( $sKey )
     {
@@ -62,7 +62,7 @@ class Logicoder_OverArray implements ArrayAccess
     /**
      * Overload magic property checker method.
      *
-     * @param   string  $sKey   The name/key string
+     * @param   string  $sKey       The name/key string
      */
     protected function __isset ( $sKey )
     {
@@ -72,7 +72,7 @@ class Logicoder_OverArray implements ArrayAccess
     /**
      * Overload magic property unsetter method.
      *
-     * @param   string  $sKey   The name/key string
+     * @param   string  $sKey       The name/key string
      */
     protected function __unset ( $sKey )
     {
@@ -82,8 +82,8 @@ class Logicoder_OverArray implements ArrayAccess
     /**
      * Implements ArrayAccess element setter.
      *
-     * @param   string  $sKey   The name/key string
-     * @param   mixed   $mValue The value
+     * @param   string  $sKey       The name/key string
+     * @param   mixed   $mValue     The value
      */
     public function offsetSet ( $sKey, $mValue )
     {
@@ -93,7 +93,7 @@ class Logicoder_OverArray implements ArrayAccess
     /**
      * Implements ArrayAccess element getter.
      *
-     * @param   string  $sKey   The name/key string
+     * @param   string  $sKey       The name/key string
      */
     public function offsetGet ( $sKey )
     {
@@ -103,7 +103,7 @@ class Logicoder_OverArray implements ArrayAccess
     /**
      * Implements ArrayAccess element unsetter.
      *
-     * @param   string  $sKey   The name/key string
+     * @param   string  $sKey       The name/key string
      */
     public function offsetUnset ( $sKey )
     {
@@ -113,7 +113,7 @@ class Logicoder_OverArray implements ArrayAccess
     /**
      * Implements ArrayAccess element checker.
      *
-     * @param   string  $sKey   The name/key string
+     * @param   string  $sKey       The name/key string
      */
     public function offsetExists ( $sKey )
     {
@@ -123,7 +123,7 @@ class Logicoder_OverArray implements ArrayAccess
     /**
      * Unserialize data from a file.
      *
-     * @param   string  $sFile  File name to load data from
+     * @param   string  $sFile      File name to load data from
      */
     public function load_data ( $sFile )
     {
@@ -139,7 +139,7 @@ class Logicoder_OverArray implements ArrayAccess
     /**
      * Serialize data to a file.
      *
-     * @param   string  $sFile  File name to save data to
+     * @param   string  $sFile      File name to save data to
      */
     public function save_data ( $sFile )
     {
