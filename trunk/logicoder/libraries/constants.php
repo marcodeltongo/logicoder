@@ -10,20 +10,21 @@
  */
 
 // -----------------------------------------------------------------------------
-
 /*
-    Define log types.
-
-    Starts with the error_log() types, see http://php.net/manual/en/function.error-log.php
+    Logicoder_Logger constants
 */
 
+/**#@+
+ * Defines a logger type.
+ */
+define('DUMMY_LOGGER',   -1);
 define('MAIL_LOGGER',     1);
 define('FILE_LOGGER',     3);
 define('DATEFILE_LOGGER', 4);
 define('COMMENT_LOGGER',  5);
-define('WINDOW_LOGGER',   6);
-define('CONSOLE_LOGGER',  7);
-define('DUMMY_LOGGER',    8);
+define('CONSOLE_LOGGER',  6);
+define('FIREBUG_LOGGER',  7);
+/**#@-*/
 
 /*
     The loggers use the syslog priorities as levels.
@@ -38,57 +39,65 @@ define('DUMMY_LOGGER',    8);
     LOG_INFO    informational message
     LOG_DEBUG   debug-level message
 */
-
+/**#@+
+ * Aliases for syslog logger levels.
+ */
 define('LOG_ERROR',     LOG_ERR);
 define('LOG_CRITICAL',  LOG_CRIT);
 define('LOG_EMERGENCY', LOG_EMERG);
-
-// END Logicoder_Logger constants
+/**#@-*/
 
 // -----------------------------------------------------------------------------
-
 /*
-    Database statements results modes.
+    Logicoder_DB_* constants
 */
+
+/**#@+
+ * Database statements fetching modes.
+ */
 define('DB_FETCH_ASSOC',    1);
 define('DB_FETCH_NUM',      2);
 define('DB_FETCH_OBJ',      3);
-
-// END Logicoder_DB_* constants
+/**#@-*/
 
 // -----------------------------------------------------------------------------
-
 /*
-    Define view source type.
+    Logicoder_View_* constants
 */
+
+/**#@+
+ * View source types.
+ */
 define('VIEW_FROM_FILE',    1);
 define('VIEW_FROM_QUERY',   2);
 define('VIEW_FROM_PARAM',   4);
 #define('VIEW_FROM_CACHE',   8);
+/**#@-*/
 
-/*
-    Define view source kind.
-*/
+/**#@+
+ * View source markup language.
+ */
 define('VIEW_IS_HTML',      32);
 define('VIEW_IS_PHP',       64);
 define('VIEW_IS_TEMPLATE',  128);
-define('VIEW_IS_TEXTILE',   256);
+#define('VIEW_IS_TEXTILE',   256);
 #define('VIEW_IS_MARKDOWN',  512);
+/**#@-*/
 
-/*
-    Define view types. (BIT-FIELDS)
-*/
+/**#@+
+ * View types. (BIT-FIELDS)
+ */
 define('HTML_VIEW',         VIEW_FROM_FILE | VIEW_IS_HTML);
 define('PHP_VIEW',          VIEW_FROM_FILE | VIEW_IS_PHP);
 define('TEMPLATE_VIEW',     VIEW_FROM_FILE | VIEW_IS_TEMPLATE);
 define('TEXTILE_VIEW',      VIEW_FROM_FILE | VIEW_IS_TEMPLATE);
+/**#@-*/
 
-/*
-    Define type extensions.
-*/
+/**#@+
+ * View type extensions.
+ */
 define('HTML_VIEW_MASK', '{.html, .htm, .xhtml}');
 define('PHP_VIEW_MASK',  '{.php, .php5, .inc}');
 define('TEMPLATE_VIEW_MASK',  '{.tpl, .tmpl, .tml}');
 define('TEXTILE_VIEW_MASK',  '{.txl, .textile}');
-
-// END Logicoder_View_* constants
+/**#@-*/
