@@ -65,6 +65,8 @@ class Logicoder_InputFilter extends Logicoder_OverArray
      *
      * @param   string  $sKey       The name/key string
      * @param   mixed   $mValue     The value
+     *
+     * @return  mixed   The value
      */
     protected function __set ( $sKey, $mValue )
     {
@@ -77,6 +79,8 @@ class Logicoder_InputFilter extends Logicoder_OverArray
      * Overload magic property getter function.
      *
      * @param   string  $sKey       The name/key string
+     *
+     * @return  mixed   The key value
      */
     protected function __get ( $sKey )
     {
@@ -97,6 +101,8 @@ class Logicoder_InputFilter extends Logicoder_OverArray
      * Overload magic property checker function.
      *
      * @param   string  $sKey       The name/key string
+     *
+     * @return  boolean Whether the key is defined
      */
     protected function __isset ( $sKey )
     {

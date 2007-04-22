@@ -36,6 +36,8 @@ class Logicoder_Logger implements Logicoder_iFactory
 
     /**
      * Factory method.
+     *
+     * @return  object  Returns a new instance
      */
     public static function instance ( /* void */ )
     {
@@ -100,6 +102,8 @@ class Logicoder_DummyLogger
 {
     /**
      * Does nothing and returns true.
+     *
+     * @return  boolean Always true
      */
     public function __call ( $sName, $aArguments )
     {
@@ -141,6 +145,8 @@ abstract class Logicoder_AbstractLogger
      *
      * @param   number  $nLevel     Message level
      * @param   string  $sMessage   The message
+     *
+     * @return  boolean Returns true if message should be logged
      */
     public function log ( $nLevel, $sMessage = '' )
     {
@@ -151,6 +157,8 @@ abstract class Logicoder_AbstractLogger
      * Logs a debug message.
      *
      * @param   string  $sMessage   The message
+     *
+     * @return  boolean Returns true if message has been logged
      */
     public function debug ( $sMessage )
     {
@@ -162,6 +170,8 @@ abstract class Logicoder_AbstractLogger
      * Logs an informational message.
      *
      * @param   string  $sMessage   The message
+     *
+     * @return  boolean Returns true if message has been logged
      */
     public function info ( $sMessage )
     {
@@ -173,6 +183,8 @@ abstract class Logicoder_AbstractLogger
      * Logs a notice message.
      *
      * @param   string  $sMessage   The message
+     *
+     * @return  boolean Returns true if message has been logged
      */
     public function notice ( $sMessage )
     {
@@ -184,6 +196,8 @@ abstract class Logicoder_AbstractLogger
      * Logs a warning message.
      *
      * @param   string  $sMessage   The message
+     *
+     * @return  boolean Returns true if message has been logged
      */
     public function warning ( $sMessage )
     {
@@ -195,6 +209,8 @@ abstract class Logicoder_AbstractLogger
      * Logs an error message.
      *
      * @param   string  $sMessage   The message
+     *
+     * @return  boolean Returns true if message has been logged
      */
     public function error ( $sMessage )
     {
@@ -206,6 +222,8 @@ abstract class Logicoder_AbstractLogger
      * Logs a critical message.
      *
      * @param   string  $sMessage   The message
+     *
+     * @return  boolean Returns true if message has been logged
      */
     public function critical ( $sMessage )
     {
@@ -217,6 +235,8 @@ abstract class Logicoder_AbstractLogger
      * Logs an alert message.
      *
      * @param   string  $sMessage   The message
+     *
+     * @return  boolean Returns true if message has been logged
      */
     public function alert ( $sMessage )
     {
@@ -228,6 +248,8 @@ abstract class Logicoder_AbstractLogger
      * Logs an emergency message.
      *
      * @param   string  $sMessage   The message
+     *
+     * @return  boolean Returns true if message has been logged
      */
     public function emergency ( $sMessage )
     {
@@ -284,6 +306,8 @@ class Logicoder_MailLogger extends Logicoder_AbstractLogger
      *
      * @param   number  $nLevel     Message level
      * @param   string  $sMessage   The message
+     *
+     * @return  boolean Returns true if message has been logged
      */
     public function log ( $nLevel, $sMessage = '' )
     {
@@ -347,6 +371,8 @@ class Logicoder_FileLogger extends Logicoder_AbstractLogger
      *
      * @param   number  $nLevel     Message level
      * @param   string  $sMessage   The message
+     *
+     * @return  boolean Returns true if message has been logged
      */
     public function log ( $nLevel, $sMessage = '' )
     {
@@ -423,6 +449,8 @@ class Logicoder_CommentLogger extends Logicoder_AbstractLogger
      *
      * @param   number  $nLevel     Message level
      * @param   string  $sMessage   The message
+     *
+     * @return  boolean Returns true if message has been logged
      */
     public function log ( $nLevel, $sMessage = '' )
     {
@@ -471,6 +499,8 @@ class Logicoder_ConsoleLogger extends Logicoder_AbstractLogger
      *
      * @param   number  $nLevel     Message level
      * @param   string  $sMessage   The message
+     *
+     * @return  boolean Returns true if message has been logged
      */
     public function log ( $nLevel, $sMessage = '' )
     {
@@ -513,6 +543,8 @@ class Logicoder_FirebugLogger extends Logicoder_AbstractLogger
      *
      * @param   number  $nLevel     Message level
      * @param   string  $sMessage   The message
+     *
+     * @return  boolean Returns true if message has been logged
      */
     public function log ( $nLevel, $sMessage = '' )
     {

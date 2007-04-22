@@ -14,13 +14,22 @@
 // -----------------------------------------------------------------------------
 
 /**
+ * @ignore
+ */
+define('ARRAY_HELPER', true);
+
+// -----------------------------------------------------------------------------
+
+/**
  * Returns array elements or default value if not set / empty.
  *
  * @param   string  $sNeedle    Element key
  * @param   array   $aHaystack  Array stack
  * @param   mixed   $mDefault   Optional default value
+ *
+ * @return	mixed	Returns array elements or default value if not set / empty
  */
-function array_element ( $sNeedle, $aHaystack, $mDefault = null )
+function array_element ( $sNeedle, array $aHaystack, $mDefault = null )
 {
     if (isset($aHaystack[$sNeedle]) and $aHaystack[$sNeedle] !== '')
     {
@@ -30,12 +39,16 @@ function array_element ( $sNeedle, $aHaystack, $mDefault = null )
 }
 // END array_element function
 
+// -----------------------------------------------------------------------------
+
 /**
  * Returns a random element of the passed array.
  *
  * @param   array   $aHaystack  Array stack
+ *
+ * @return	boolean	Returns a random element of the passed array.
  */
-function array_random ( $aHaystack )
+function array_random ( array $aHaystack )
 {
     if (is_array($aHaystack))
     {
@@ -45,25 +58,29 @@ function array_random ( $aHaystack )
 }
 // END array_random function
 
+// -----------------------------------------------------------------------------
+
 /**
  * Returns true if an array is an associative array.
  *
  * @param   array   $aArray     Array to check
+ *
+ * @return	boolean	Returns true if an array is an associative array
  */
-function is_assoc ( $aArray )
+function is_assoc ( array $aArray )
 {
-    if (is_array($aArray))
-    {
-        return (bool)array_diff_assoc(array_keys($aArray), range(0, count($aArray)));
-	}
-	return false;
+    return (bool)array_diff_assoc(array_keys($aArray), range(0, count($aArray)));
 }
 // END is_assoc function
+
+// -----------------------------------------------------------------------------
 
 /**
  * Returns an array with the object variables.
  *
  * @param   object  $oSrc       Object to get vars from
+ *
+ * @return	array	Returns an array with the object variables
  */
 function object_to_array ( $oSrc )
 {
@@ -92,3 +109,54 @@ function object_to_array ( $oSrc )
     return $aRet;
 }
 // END object_to_array function
+
+// -----------------------------------------------------------------------------
+
+/**
+ * Returns true if array is an array contains other arrays.
+ *
+ * @param   array   $aArray     Array to check
+ *
+ * @return	boolean	Returns true if array is an array contains other arrays
+ */
+function is_array_array ( array $aArray )
+{
+	foreach ($aArray as $element)
+	{
+		if (is_array($element))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+// END is_array_array function
+
+// -----------------------------------------------------------------------------
+
+/**
+ * Returns how many levels an array has.
+ *
+ * @param   array   $aArray     Array to check
+ * @param   integer $iLevel     Current level deepness
+ *
+ * @return	integer	Returns how many levels an array has
+ */
+function array_levels ( array $aArray, $iLevel = 0 )
+{
+	if (empty($aArray))
+	{
+		return 0;
+	}
+	$aLevels = array(++$iLevel);
+	foreach ($aArray as $element)
+	{
+		if (is_array($element))
+		{
+			$aLevels[] = array_levels($element, $iLevel);
+		}
+	}
+	#var_dump($aLevels);
+	return max($aLevels);
+}
+// END is_array_array function

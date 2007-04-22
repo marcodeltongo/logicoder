@@ -14,9 +14,18 @@
 // -----------------------------------------------------------------------------
 
 /**
- * Return the file extension.
+ * @ignore
+ */
+define('FILE_HELPER', true);
+
+// -----------------------------------------------------------------------------
+
+/**
+ * Returns the file extension.
  *
  * @param   string  $sFilename  The file name to extract extension from
+ *
+ * @return  string  Returns the file extension
  */
 function file_ext ( $sFilename )
 {
