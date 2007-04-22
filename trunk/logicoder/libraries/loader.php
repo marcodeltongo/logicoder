@@ -280,7 +280,7 @@ class Logicoder_Loader
     /**
      * Loads a controller.
      *
-     * @param   string  $sLibrary       Controller name
+     * @param   string  $sName          Controller name
      * @param   string  $sPath          Path to haystack directory
      * @param   string  $sClass         Override classname algorithm
      * @param   boolean $bNewInstance   True to return a new object of the load library

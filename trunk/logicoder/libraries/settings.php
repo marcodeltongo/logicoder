@@ -64,6 +64,8 @@ class Logicoder_Settings extends Logicoder_OverArray
      *
      * @param   string  $sName      The name/key string
      * @param   mixed   $mValue     The value
+     *
+     * @return  mixed   The key value
      */
     protected function __set ( $sName, $mValue )
     {
@@ -93,6 +95,8 @@ class Logicoder_Settings extends Logicoder_OverArray
      * Overload magic property getter function.
      *
      * @param   string  $sName      The name/key string
+     *
+     * @return  mixed   The key value or null
      */
     protected function __get ( $sName )
     {
@@ -113,6 +117,8 @@ class Logicoder_Settings extends Logicoder_OverArray
      * Overload magic property check function.
      *
      * @param   string  $sName      The name/key string
+     *
+     * @return  boolean Whether the key is defined
      */
     protected function __isset ( $sName )
     {
@@ -134,8 +140,11 @@ class Logicoder_Settings extends Logicoder_OverArray
      *
      * @param   string  $sNamespace The namespace
      * @param   string  $sKey       The name/key string
+     * @param   mixed   $mDefault   A default if setting not found
+     *
+     * @return  mixed   The key value, default value or null
      */
-    public function get ( $sNamespace, $sKey )
+    public function get ( $sNamespace, $sKey, $mDefault = null )
     {
         if (isset($this->aData[$sNamespace]))
         {
@@ -144,13 +153,15 @@ class Logicoder_Settings extends Logicoder_OverArray
                 return $this->aData[$sNamespace][$sKey];
             }
         }
-        return null;
+        return $mDefault;
     }
 
     /**
      * Returns entire $sNamespace array.
      *
      * @param   string  $sNamespace The namespace
+     *
+     * @return  mixed   The key value or null
      */
     public function get_ns ( $sNamespace )
     {
@@ -181,6 +192,8 @@ class Logicoder_Settings extends Logicoder_OverArray
      *
      * @param   string  $sNamespace     The namespace
      * @param   boolean $bUseConstants  Create constants of settings
+     *
+     * @return  object  Returns itself for method chaining
      */
     public function namespace ( $sNamespace = null, $bUseConstants = null )
     {
@@ -238,6 +251,8 @@ class Logicoder_Settings extends Logicoder_OverArray
      *
      * @param   string  $sFile      The filename
      * @param   string  $sNamespace The namespace
+     *
+     * @return  object  Returns itself for method chaining
      */
     public function load ( $sFile = PROJECT_SETTINGS, $sNamespace = null )
     {
@@ -278,6 +293,8 @@ class Logicoder_Settings extends Logicoder_OverArray
      * Save a settings file.
      *
      * @param   string  $sFile      The filename
+     *
+     * @return  mixed   Returns itself for method chaining or the built array
      */
     public function save ( $sFile = false )
     {

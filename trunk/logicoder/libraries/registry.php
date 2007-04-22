@@ -10,6 +10,15 @@
 
 // -----------------------------------------------------------------------------
 
+/**#@+
+ * Required dependency.
+ */
+require('interfaces.php');
+require('overarray.php');
+/**#@-*/
+
+// -----------------------------------------------------------------------------
+
 /**
  * An implementation of the registry pattern.
  *
@@ -25,6 +34,8 @@ class Logicoder_Registry extends Logicoder_OverArray implements Logicoder_iRegis
      *
      * @param   string  $sKey   The name/key string
      * @param   mixed   $mValue The value
+     *
+     * @return  mixed   The key value
      */
     public function register ( $sKey, $mValue )
     {
@@ -38,13 +49,15 @@ class Logicoder_Registry extends Logicoder_OverArray implements Logicoder_iRegis
      */
     public function unregister ( $sKey )
     {
-        return $this->__unset($sKey);
+        $this->__unset($sKey);
     }
 
     /**
      * Returns the value of $sKey is in the registry.
      *
      * @param   string  $sKey   The name/key string
+     *
+     * @return  mixed   The key value
      */
     public function get ( $sKey )
     {
@@ -55,6 +68,8 @@ class Logicoder_Registry extends Logicoder_OverArray implements Logicoder_iRegis
      * Returns true if $sKey is in the registry.
      *
      * @param   string  $sKey   The name/key string
+     *
+     * @return  boolean Whether the key is defined
      */
     public function has ( $sKey )
     {
@@ -80,6 +95,8 @@ class Logicoder_ObjectRegistry extends Logicoder_Registry
      *
      * @param   string  $sKey   The name/key string
      * @param   object  $mValue The object
+     *
+     * @return  mixed   The object
      */
     public function register ( $sKey, $oObject )
     {

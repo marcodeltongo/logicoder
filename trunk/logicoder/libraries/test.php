@@ -365,7 +365,7 @@ class Logicoder_Test
         {
             if ($this->runBefore !== false)
             {
-                return call_user_func($this->runBefore);
+                call_user_func($this->runBefore);
             }
         }
         else
@@ -385,7 +385,7 @@ class Logicoder_Test
         {
             if ($this->runAfter !== false)
             {
-                return call_user_func($this->runAfter);
+                call_user_func($this->runAfter);
             }
         }
         else

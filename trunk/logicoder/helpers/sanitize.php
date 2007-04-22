@@ -14,6 +14,11 @@
 // -----------------------------------------------------------------------------
 
 /**
+ * @ignore
+ */
+define('SANITIZE_HELPER', true);
+
+/**
  * Boolean constant for "magic quotes" handling
  */
 define('MAGIC_QUOTES', (bool)get_magic_quotes_gpc());
@@ -24,6 +29,8 @@ define('MAGIC_QUOTES', (bool)get_magic_quotes_gpc());
  * Basic cleaning.
  *
  * @param   string  $sString    String to sanitize
+ *
+ * @return  string  Returns a sanitized string
  */
 function sanitize ( $sString )
 {
@@ -47,10 +54,14 @@ function sanitize ( $sString )
 }
 // END sanitize function
 
+// -----------------------------------------------------------------------------
+
 /**
  * Alphanumeric sanitization.
  *
  * @param   string  $sString    String to sanitize
+ *
+ * @return  string  Returns a sanitized string
  */
 function sanitize_alphanum ( $sString )
 {
@@ -58,10 +69,14 @@ function sanitize_alphanum ( $sString )
 }
 // END sanitize_alphanum function
 
+// -----------------------------------------------------------------------------
+
 /**
  * Alpha sanitization.
  *
  * @param   string  $sString    String to sanitize
+ *
+ * @return  string  Returns a sanitized string
  */
 function sanitize_alpha ( $sString )
 {
@@ -69,10 +84,14 @@ function sanitize_alpha ( $sString )
 }
 // END sanitize_alpha function
 
+// -----------------------------------------------------------------------------
+
 /**
  * Integer sanitization.
  *
  * @param   string  $sString    String to sanitize
+ *
+ * @return  integer Returns a sanitized integer
  */
 function sanitize_int ( $sString )
 {
@@ -80,10 +99,14 @@ function sanitize_int ( $sString )
 }
 // END sanitize_int function
 
+// -----------------------------------------------------------------------------
+
 /**
  * Digits sanitization.
  *
  * @param   string  $sString    String to sanitize
+ *
+ * @return  string  Returns a sanitized string
  */
 function sanitize_digits ( $sString )
 {
@@ -91,10 +114,14 @@ function sanitize_digits ( $sString )
 }
 // END sanitize_digits function
 
+// -----------------------------------------------------------------------------
+
 /**
  * Float sanitization.
  *
  * @param   string  $sString    String to sanitize
+ *
+ * @return  string  Returns a sanitized float
  */
 function sanitize_float ( $sString )
 {
@@ -102,10 +129,14 @@ function sanitize_float ( $sString )
 }
 // END sanitize_float function
 
+// -----------------------------------------------------------------------------
+
 /**
  * Path sanitization.
  *
  * @param   string  $sString    String to sanitize
+ *
+ * @return  string  Returns a sanitized string with the real path
  */
 function sanitize_path ( $sString )
 {
@@ -113,10 +144,14 @@ function sanitize_path ( $sString )
 }
 // END sanitize_path function
 
+// -----------------------------------------------------------------------------
+
 /**
  * Dirname sanitization.
  *
  * @param   string  $sString    String to sanitize
+ *
+ * @return  string  Returns a sanitized string with the dir name
  */
 function sanitize_dir ( $sString )
 {
@@ -124,10 +159,14 @@ function sanitize_dir ( $sString )
 }
 // END sanitize_dir function
 
+// -----------------------------------------------------------------------------
+
 /**
  * Filename sanitization.
  *
  * @param   string  $sString    String to sanitize
+ *
+ * @return  string  Returns a sanitized string with the base file name
  */
 function sanitize_file ( $sString )
 {
@@ -135,10 +174,14 @@ function sanitize_file ( $sString )
 }
 // END sanitize_file function
 
+// -----------------------------------------------------------------------------
+
 /**
  * Sanitize a string for system() or similar functions.
  *
  * @param   string  $sString    String to sanitize
+ *
+ * @return  string  Returns a sanitized string for system() or similar functions
  */
 function sanitize_system ( $sString )
 {
@@ -149,10 +192,14 @@ function sanitize_system ( $sString )
 }
 // END sanitize_system function
 
+// -----------------------------------------------------------------------------
+
 /**
  * Sanitize a string for SQL.
  *
  * @param   string  $sString    String to sanitize
+ *
+ * @return  string  Returns a sanitized SQL string
  */
 function sanitize_sql ( $sString )
 {
@@ -162,10 +209,14 @@ function sanitize_sql ( $sString )
 }
 // END sanitize_sql function
 
+// -----------------------------------------------------------------------------
+
 /**
  * Sanitize a string for LDAP.
  *
  * @param   string  $sString    String to sanitize
+ *
+ * @return  string  Returns a sanitized string
  */
 function sanitize_ldap ( $sString )
 {
@@ -173,10 +224,14 @@ function sanitize_ldap ( $sString )
 }
 // END sanitize_ldap function
 
+// -----------------------------------------------------------------------------
+
 /**
  * Sanitize an HTML string.
  *
  * @param   string  $sString    String to sanitize
+ *
+ * @return  string  Returns a sanitized HTML string
  */
 function sanitize_html ( $sString )
 {

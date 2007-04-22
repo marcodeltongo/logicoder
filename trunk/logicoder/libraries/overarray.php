@@ -43,6 +43,8 @@ class Logicoder_OverArray implements ArrayAccess
      *
      * @param   string  $sKey       The name/key string
      * @param   mixed   $mValue     The value
+     *
+     * @return  mixed   The key value
      */
     protected function __set ( $sKey, $mValue )
     {
@@ -53,6 +55,8 @@ class Logicoder_OverArray implements ArrayAccess
      * Overload magic property getter method.
      *
      * @param   string  $sKey       The name/key string
+     *
+     * @return  mixed   The key value
      */
     protected function __get ( $sKey )
     {
@@ -63,6 +67,8 @@ class Logicoder_OverArray implements ArrayAccess
      * Overload magic property checker method.
      *
      * @param   string  $sKey       The name/key string
+     *
+     * @return  boolean Whether the key is defined
      */
     protected function __isset ( $sKey )
     {
@@ -84,6 +90,8 @@ class Logicoder_OverArray implements ArrayAccess
      *
      * @param   string  $sKey       The name/key string
      * @param   mixed   $mValue     The value
+     *
+     * @return  mixed   The key value
      */
     public function offsetSet ( $sKey, $mValue )
     {
@@ -94,6 +102,8 @@ class Logicoder_OverArray implements ArrayAccess
      * Implements ArrayAccess element getter.
      *
      * @param   string  $sKey       The name/key string
+     *
+     * @return  mixed   The key value
      */
     public function offsetGet ( $sKey )
     {
@@ -107,13 +117,15 @@ class Logicoder_OverArray implements ArrayAccess
      */
     public function offsetUnset ( $sKey )
     {
-        return $this->__unset($sKey);
+        $this->__unset($sKey);
     }
 
     /**
      * Implements ArrayAccess element checker.
      *
      * @param   string  $sKey       The name/key string
+     *
+     * @return  boolean Whether the key is defined
      */
     public function offsetExists ( $sKey )
     {
@@ -148,6 +160,8 @@ class Logicoder_OverArray implements ArrayAccess
 
     /**
      * Clean data before sleeping.
+     *
+     * @return  array   Returns an array with cleaned data
      */
     function __sleep ( /* void */ )
     {
