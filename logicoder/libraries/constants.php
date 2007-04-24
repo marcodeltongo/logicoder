@@ -80,8 +80,7 @@ define('VIEW_FROM_PARAM',   4);
 define('VIEW_IS_HTML',      32);
 define('VIEW_IS_PHP',       64);
 define('VIEW_IS_TEMPLATE',  128);
-#define('VIEW_IS_TEXTILE',   256);
-#define('VIEW_IS_MARKDOWN',  512);
+define('VIEW_IS_DWT',       256);
 /**#@-*/
 
 /**#@+
@@ -90,7 +89,7 @@ define('VIEW_IS_TEMPLATE',  128);
 define('HTML_VIEW',         VIEW_FROM_FILE | VIEW_IS_HTML);
 define('PHP_VIEW',          VIEW_FROM_FILE | VIEW_IS_PHP);
 define('TEMPLATE_VIEW',     VIEW_FROM_FILE | VIEW_IS_TEMPLATE);
-define('TEXTILE_VIEW',      VIEW_FROM_FILE | VIEW_IS_TEMPLATE);
+define('TEMPLATE_VIEW',     VIEW_FROM_FILE | VIEW_IS_DWT);
 /**#@-*/
 
 /**#@+
@@ -98,6 +97,6 @@ define('TEXTILE_VIEW',      VIEW_FROM_FILE | VIEW_IS_TEMPLATE);
  */
 define('HTML_VIEW_MASK', '{.html, .htm, .xhtml}');
 define('PHP_VIEW_MASK',  '{.php, .php5, .inc}');
-define('TEMPLATE_VIEW_MASK',  '{.tpl, .tmpl, .tml}');
-define('TEXTILE_VIEW_MASK',  '{.txl, .textile}');
+define('TEMPLATE_VIEW_MASK',  '{.thmtl, .tpl, .tmpl, .tml}');
+define('DWT_VIEW_MASK',  '{.dwt}');
 /**#@-*/

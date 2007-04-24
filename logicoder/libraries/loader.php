@@ -10,25 +10,6 @@
 
 // -----------------------------------------------------------------------------
 
-/**#@+
- * Defaults.
- */
-if (!defined('LOGICODER_ROOT'))
-{
-    define('LOGICODER_ROOT', '');
-}
-if (!defined('PROJECT_ROOT'))
-{
-    define('PROJECT_ROOT', '');
-}
-if (!defined('PROJECT_NAME'))
-{
-    define('PROJECT_NAME', '');
-}
-/**#@-*/
-
-// -----------------------------------------------------------------------------
-
 /**
  * The Loader class.
  *

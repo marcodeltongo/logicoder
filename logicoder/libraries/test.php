@@ -202,10 +202,11 @@ class Logicoder_Test
         $sHtml .= "body { background: #d3d7cf; font-family: Consolas,'Lucida Console', monospace; font-size: 11px; text-align: center; }\n";
         $sHtml .= "table { border-collapse: collapse; width: 760px;";
         $sHtml .= " font-size: 14px; margin: 0 auto; border: 1px solid #555753; text-align: left; }\n";
-        $sHtml .= "td { padding: 2px 4px; }\n";
+        $sHtml .= "td { padding: 2px 8px; }\n";
         $sHtml .= "h1 { color: #2e3436; }\n";
         $sHtml .= ".PLAN { background: #3465a4; color: white; font-size: 16px; font-weight: bold; font-variant: small-caps; }\n";
         $sHtml .= ".TNUM { text-align: right }\n";
+        $sHtml .= ".MSG  { width: 40%; }\n";
         $sHtml .= ".PASS { background: #4e9a06; color: white; }\n";
         $sHtml .= ".TODO { background: #ce5c00; color: white; }\n";
         $sHtml .= ".FAIL { background: #a40000; color: white; }\n";
@@ -439,7 +440,7 @@ class Logicoder_Test
             {
                 $sLine = '<tr class="PASS">';
             }
-            $sLine .= '<td class="TNUM">' . $this->nTestsRun . '</td><td>' . $sMessage . '</td><td>';
+            $sLine .= '<td class="TNUM">' . $this->nTestsRun . '</td><td class="MSG">' . $sMessage . '</td><td>';
             if ($sInfo !== false)
             {
                 $sLine .=  ' ' . $sInfo;
@@ -525,7 +526,7 @@ class Logicoder_Test
                 $sLine = '<tr class="FAIL">';
             }
             $sLine .= '<td class="TNUM">' . $this->nTestsRun . '</td>';
-            $sLine .= '<td>' . $sMessage . '</td>';
+            $sLine .= '<td class="MSG">' . $sMessage . '</td>';
             $aTrace = debug_backtrace();
             foreach ($aTrace as $mStep)
             {
@@ -1346,10 +1347,17 @@ class Logicoder_Test
      * @param   string  $sDirname   Directory to scan for tests
      * @param   regex   $rFilter    RegEx filter to apply to filenames
      * @param   array   $aExcept    Array of files to skip
-     * @param   boolean $bRecursive Whether is a recursive call or not
      */
-    public function all_in ( $sDirname = '.', $rFilter = '|_t.php|', $aExcept = array(), $bRecursive = false )
+    public function all_in ( $sDirname = '.', $rFilter = '|_t.php|', $aExcept = array() )
     {
+        /*
+            Used to detect recursion.
+        */
+        static $sBaseDir = null;
+        if (is_null($sBaseDir))
+        {
+            $sBaseDir = realpath($sDirname);
+        }
         /*
             Get the directory
         */
@@ -1371,7 +1379,7 @@ class Logicoder_Test
                 */
                 if (!stristr($sFile, "."))
                 {
-                    $this->all_in($sFile, $rFilter, $aExcept, true);
+                    $this->all_in($sFile, $rFilter, $aExcept);
                 }
                 /*
                     Skip if not a file nor a directory or isn't readable
@@ -1388,7 +1396,15 @@ class Logicoder_Test
             /*
                 Run the test file
             */
-            $this->run($sFile, ($bRecursive) ? $sDirname.'/' : '');
+            $sRelPath = str_replace($sBaseDir, '', getcwd()) . '/';
+            $this->run($sFile, substr($sRelPath, 1));
+        }
+        /*
+            Clean up ?
+        */
+        if ($sBaseDir == getcwd())
+        {
+            $sBaseDir = null;
         }
         closedir($dir);
         chdir($oldir);

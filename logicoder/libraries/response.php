@@ -11,16 +11,6 @@
 // -----------------------------------------------------------------------------
 
 /**
- * Should compress output ? If not required, no.
- */
-if (!defined('RESPONSE_COMPRESS_OUTPUT'))
-{
-    define('RESPONSE_COMPRESS_OUTPUT', false);
-}
-
-// -----------------------------------------------------------------------------
-
-/**
  * The HTTP response class.
  *
  * @package     Logicoder
