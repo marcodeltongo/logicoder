@@ -53,10 +53,6 @@ class Logicoder_Settings extends Logicoder_OverArray
         $this->sMaster      = $sNamespace;
         $this->aToConstants = array($sNamespace => true);
         $this->bSkipNS      = false;
-        /*
-            Load main settings.
-        */
-        $this->load();
     }
 
     /**
@@ -254,7 +250,7 @@ class Logicoder_Settings extends Logicoder_OverArray
      *
      * @return  object  Returns itself for method chaining
      */
-    public function load ( $sFile = PROJECT_SETTINGS, $sNamespace = null )
+    public function load ( $sFile, $sNamespace = null )
     {
         /*
             Save current namespace.

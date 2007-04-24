@@ -156,7 +156,6 @@ function array_levels ( array $aArray, $iLevel = 0 )
 			$aLevels[] = array_levels($element, $iLevel);
 		}
 	}
-	#var_dump($aLevels);
 	return max($aLevels);
 }
 // END is_array_array function

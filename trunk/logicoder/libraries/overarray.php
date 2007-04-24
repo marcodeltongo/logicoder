@@ -21,7 +21,7 @@
 class Logicoder_OverArray implements ArrayAccess
 {
     /**
-     * Internal datat stack.
+     * Internal data stack.
      */
     protected $aData = array();
 

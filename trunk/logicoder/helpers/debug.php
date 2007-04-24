@@ -193,11 +193,15 @@ function var_name ( $mVar, $sFunction = 'var_name' )
 /**
  * Dumps with details.
  *
- * @param   mixed   $parameter  One or more parameters to be exported
+ * @param   mixed   $mVar       Variable to dump
+ * @param   boolean $bReturn    Whether to return or output
+ *
+ * @return  string  If $bReturn == true
  */
-function dump ( /* ... */ )
+function dump ( $mVar, $bReturn = false )
 {
-    foreach (func_get_args() as $mVar)
+    $sOutput = '';
+    if (is_scalar($mVar))
     {
         /*
             Prepare header.
@@ -212,7 +216,48 @@ function dump ( /* ... */ )
         /*
             Dump table.
         */
-        echo array2table($aData, null, 'dump', true);
+        $sOutput = array2table($aData, null, 'dump', true);
     }
+    else
+    {
+    }
+    if ($bReturn)
+    {
+        return $sOutput;
+    }
+    echo $sOutput;
 }
 // END dump function
+/*
+dump(0);
+dump(true);
+dump(false);
+
+$test = 'YEP!';
+dump($test);
+
+class Vegetable {
+
+   var $edible;
+   var $color;
+   var $test = array(1, 2, 3, array('0'));
+   var $t;
+
+   function Vegetable($edible, $color="green") {
+       $this->edible = $edible;
+       $this->color = $color;
+       $this->t = $this;
+   }
+
+   function is_edible() {
+       return $this->edible;
+   }
+
+   function what_color() {
+       return $this->color;
+   }
+
+}
+$variable=new Vegetable("spinach");
+dump($variable);
+*/
