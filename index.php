@@ -1,6 +1,6 @@
 <?php
 /**
- * Logicoder Web Application Framework - Front Controller
+ * Logicoder Web Application Framework - Front Runner
  *
  * @package     Logicoder
  * @copyright   Copyright (c) 1999-2007, Marco Del Tongo
@@ -34,4 +34,4 @@ require LOGICODER_ROOT . 'logicoder' . EXT;
 /*
     Run the system.
 */
-Logicoder();
+Logicoder::instance();

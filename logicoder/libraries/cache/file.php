@@ -14,7 +14,7 @@
  * Cache to files container class.
  *
  * @package     Logicoder
- * @subpackage  Views
+ * @subpackage  Cache
  * @link        http://www.logicoder.com/documentation/cache.html
  * @author      Marco Del Tongo <info@marcodeltongo.com>
  */
