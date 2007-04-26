@@ -17,13 +17,13 @@
 /**#@+
  * Defines a logger type.
  */
-define('DUMMY_LOGGER',   -1);
-define('MAIL_LOGGER',     1);
-define('FILE_LOGGER',     3);
-define('DATEFILE_LOGGER', 4);
-define('COMMENT_LOGGER',  5);
-define('CONSOLE_LOGGER',  6);
-define('FIREBUG_LOGGER',  7);
+define('DUMMY_LOGGER',      'Dummy');
+define('MAIL_LOGGER',       'Mail');
+define('FILE_LOGGER',       'File');
+define('DATEFILE_LOGGER',   'DateFile');
+define('COMMENT_LOGGER',    'Comment');
+define('CONSOLE_LOGGER',    'Console');
+define('FIREBUG_LOGGER',    'Firebug');
 /**#@-*/
 
 /*
@@ -49,19 +49,6 @@ define('LOG_EMERGENCY', LOG_EMERG);
 
 // -----------------------------------------------------------------------------
 /*
-    Logicoder_DB_* constants
-*/
-
-/**#@+
- * Database statements fetching modes.
- */
-define('DB_FETCH_ASSOC',    1);
-define('DB_FETCH_NUM',      2);
-define('DB_FETCH_OBJ',      3);
-/**#@-*/
-
-// -----------------------------------------------------------------------------
-/*
     Logicoder_View_* constants
 */
 
@@ -71,7 +58,6 @@ define('DB_FETCH_OBJ',      3);
 define('VIEW_FROM_FILE',    1);
 define('VIEW_FROM_QUERY',   2);
 define('VIEW_FROM_PARAM',   4);
-#define('VIEW_FROM_CACHE',   8);
 /**#@-*/
 
 /**#@+
@@ -89,7 +75,7 @@ define('VIEW_IS_DWT',       256);
 define('HTML_VIEW',         VIEW_FROM_FILE | VIEW_IS_HTML);
 define('PHP_VIEW',          VIEW_FROM_FILE | VIEW_IS_PHP);
 define('TEMPLATE_VIEW',     VIEW_FROM_FILE | VIEW_IS_TEMPLATE);
-define('TEMPLATE_VIEW',     VIEW_FROM_FILE | VIEW_IS_DWT);
+define('DWT_VIEW',          VIEW_FROM_FILE | VIEW_IS_DWT);
 /**#@-*/
 
 /**#@+
@@ -99,4 +85,30 @@ define('HTML_VIEW_MASK', '{.html, .htm, .xhtml}');
 define('PHP_VIEW_MASK',  '{.php, .php5, .inc}');
 define('TEMPLATE_VIEW_MASK',  '{.thmtl, .tpl, .tmpl, .tml}');
 define('DWT_VIEW_MASK',  '{.dwt}');
+/**#@-*/
+
+// -----------------------------------------------------------------------------
+/*
+    Logicoder_Cache_* constants
+*/
+
+/**#@+
+ * Cache containers.
+ */
+define('CACHE_FILE',        'File');
+define('CACHE_MEMCACHE',    'Memcache');
+define('CACHE_APC',         'APC');
+/**#@-*/
+
+// -----------------------------------------------------------------------------
+/*
+    Logicoder_DB_* constants
+*/
+
+/**#@+
+ * Database statements fetching modes.
+ */
+define('DB_FETCH_ASSOC',    1);
+define('DB_FETCH_NUM',      2);
+define('DB_FETCH_OBJ',      3);
 /**#@-*/

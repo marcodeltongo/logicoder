@@ -11,7 +11,7 @@
 // -----------------------------------------------------------------------------
 
 /**
- * View class.
+ * View factory class.
  *
  * @package     Logicoder
  * @subpackage  Views
@@ -21,7 +21,7 @@
 class Logicoder_View_Factory implements Logicoder_iFactory
 {
     /**
-     * Returns a new instance of the class.
+     * Returns a new instance of a View class.
      *
      * @param   string  $sViewSrc   The view name / query / source
      * @param   numeric $nType      The view type
