@@ -157,7 +157,7 @@ class Logicoder_Response extends Logicoder_OverArray
         */
         try
         {
-            $oView = Logicoder()->load->view($sView);
+            $oView = Logicoder::instance()->load->view($sView);
             $oView->render((array)(is_null($sMessage) ? null : $sMessage));
         }
         catch (Exception $e)
