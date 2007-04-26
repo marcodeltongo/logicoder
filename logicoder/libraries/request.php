@@ -162,16 +162,5 @@ class Logicoder_Request
     {
         return array_element($this->SERVER, 'HTTPS', false) !== false;
     }
-
-    /**
-     * Returns an object implementing the User interface.
-     *
-     * @return  mixed   Returns an object implementing the User interface
-     */
-    public function user ( /* void */ )
-    {
-        throw new Exception('NOT YET IMPLEMENTED', 500);
-        return null;
-    }
 }
 // END Logicoder_Request class
