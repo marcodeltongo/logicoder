@@ -1400,7 +1400,7 @@ class Logicoder_Test
             $this->run($sFile, substr($sRelPath, 1));
         }
         /*
-            Clean up ?
+            If this is the outer call, clean static var.
         */
         if ($sBaseDir == getcwd())
         {
