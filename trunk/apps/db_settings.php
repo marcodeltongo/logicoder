@@ -19,29 +19,29 @@ $this->namespace('DB', true);
 /*
     Should we auto-open a connection ?
 */
-$this['AUTOCONNECT'] = true;
+$this['AUTOCONNECT'] = false;
 
 /*
     Driver to use / Database Type.
 
     See documentation for available drivers.
 */
-$this['DRIVER'] = 'PDO_SQLite';
+$this['DRIVER'] = 'PHP_MySQLi';
 
 /*
     The DB server hostname or path to the database.
 */
-$this['HOSTNAME'] = ':memory:';
+$this['HOSTNAME'] = 'localhost';
 
 /*
     The schema/database name.
 */
-$this['DATABASE'] = '';
+$this['DATABASE'] = 'logicoder';
 
 /*
     The username to use to access the server.
 */
-$this['USERNAME'] = '';
+$this['USERNAME'] = 'root';
 
 /*
     The password to use to access the server.

@@ -220,6 +220,20 @@ function dump ( $mVar, $bReturn = false )
     }
     else
     {
+        /*
+            Prepare header.
+        */
+        $aData = array(array(var_name($mVar, 'dump')));
+        /*
+            Get value.
+        */
+        ob_start();
+        debug_zval_dump($mVar);
+        $aData[] = array('<pre>' . ob_get_clean() . '</pre>');
+        /*
+            Dump table.
+        */
+        $sOutput = array2table($aData, null, 'dump', true);
     }
     if ($bReturn)
     {

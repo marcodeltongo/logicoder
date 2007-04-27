@@ -139,7 +139,7 @@ class Logicoder extends Logicoder_ObjectRegistry implements Logicoder_iSingleton
         */
         if (DB_AUTOCONNECT)
         {
-            #$this->register('db', $this->load->library('DB_Factory', true));
+            $this->register('db', $this->load->library('DB_Factory', true));
         }
         /*
             Try to get the controller up and running.

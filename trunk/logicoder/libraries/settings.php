@@ -272,10 +272,14 @@ class Logicoder_Settings extends Logicoder_OverArray
             $this->namespace($this->sMaster);
         }
         /*
-            Get settings.
+            To get settings, change working dir to support load inside settings,
+            then include the file and finally reset to old working directory.
         */
         ob_start();
-        $bOk = include $sFile;
+            $sOldir = getcwd();
+            chdir(realpath(dirname($sFile)));
+            $bOk = include $sFile;
+            chdir($sOldir);
         ob_end_clean();
         /*
             Select previous namespace.
