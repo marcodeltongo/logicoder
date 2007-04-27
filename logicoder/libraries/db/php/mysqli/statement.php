@@ -45,7 +45,7 @@ class Logicoder_DB_PHP_MySQLi_Statement extends Logicoder_DB_Statement
      * @param   object  $oStmt      Underlying statement object
      * @param   array   $aNamed     Named placeholders mappings
      */
-    public function __construct ( mysqli_stmt $oStmt, array $aNamed = array())
+    public function __construct ( mysqli_stmt $oStmt, array $aNamed = array() )
     {
         parent::__construct($oStmt);
         $this->aNamed = $aNamed;
@@ -54,7 +54,6 @@ class Logicoder_DB_PHP_MySQLi_Statement extends Logicoder_DB_Statement
     // -------------------------------------------------------------------------
     //  IMPLEMENTED ABSTRACT METHODS
     // -------------------------------------------------------------------------
-
 
     /**
      * Binds a value to a parameter in the prepared statement
@@ -65,6 +64,10 @@ class Logicoder_DB_PHP_MySQLi_Statement extends Logicoder_DB_Statement
      */
     public function bind ( array $aData = null )
     {
+        if (is_null($aData))
+        {
+            return false;
+        }
         if (is_assoc($aData))
         {
             /*
@@ -118,10 +121,7 @@ class Logicoder_DB_PHP_MySQLi_Statement extends Logicoder_DB_Statement
      */
     public function execute ( array $aData = null )
     {
-        if (!is_null($aData))
-        {
-            $this->bind($aData);
-        }
+        $this->bind($aData);
         $this->oMeta = null;
         $bRet = $this->oStmt->execute();
         if ($this->oMeta = $this->oStmt->result_metadata())

@@ -52,10 +52,14 @@ class Logicoder_DB_PHP_MySQLi_Driver extends Logicoder_DB_Driver
             Let the parent do the work.
         */
         parent::__construct($aConnection, $aOptions);
-        /*
-            Set CHARSET to use for everything.
-        */
-        $this->execute('SET NAMES ' . DB_CHARSET);
+
+        if (defined('DB_CHARSET'))
+        {
+            /*
+                Set CHARSET to use for everything.
+            */
+            $this->execute('SET NAMES ' . DB_CHARSET);
+        }
     }
 
     /**
@@ -167,7 +171,7 @@ class Logicoder_DB_PHP_MySQLi_Driver extends Logicoder_DB_Driver
      */
     public function begin ( /* void */ )
     {
-        return $this->oDB->autocommit(false);
+        return $this->bTransaction = $this->oDB->autocommit(false);
     }
 
     /**
@@ -180,6 +184,7 @@ class Logicoder_DB_PHP_MySQLi_Driver extends Logicoder_DB_Driver
         if ($this->oDB->commit())
         {
             $this->oDB->autocommit(true);
+            $this->bTransaction = false;
             return true;
         }
         return false;
@@ -195,6 +200,7 @@ class Logicoder_DB_PHP_MySQLi_Driver extends Logicoder_DB_Driver
         if ($this->oDB->rollback())
         {
             $this->oDB->autocommit(true);
+            $this->bTransaction = false;
             return true;
         }
         return false;

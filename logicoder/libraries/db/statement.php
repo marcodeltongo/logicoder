@@ -188,37 +188,19 @@ abstract class Logicoder_DB_Statement implements IteratorAggregate
     public function col ( $mColumn = 0 )
     {
         /*
-            Without statement, return empty array.
+            Check if column is numeric or suppose string.
         */
-        if (is_null($this->oStmt))
+        if (is_numeric($mColumn))
         {
-            return null;
+            $aRow = $this->row_num();
+        }
+        else
+        {
+            $aRow = $this->row();
         }
         /*
-            If we don't have results, fetch them according to iMode.
+            Return result.
         */
-        if (is_null($this->mResults))
-        {
-            /*
-                Check if column is numeric or suppose string.
-            */
-            if (is_numeric($mColumn))
-            {
-                $aRow = $this->row_num();
-            }
-            else
-            {
-                $aRow = $this->row();
-            }
-            /*
-                Return result.
-            */
-            return $aRow[$mColumn];
-        }
-        /*
-            Return next row column, as is.
-        */
-        $aRow = $this->row();
         return $aRow[$mColumn];
     }
 
