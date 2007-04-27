@@ -51,12 +51,27 @@ define('PROJECT_NAME', 'A Logicoder Project');
 define('ROOT', realpath('.') . '/');
 
 /**
- * Absolute path to the directory that holds the project.
+ * Absolute path to the directory that holds the Logicoder framework.
  */
-define('PROJECT_ROOT', ROOT);
+define('LOGICODER_ROOT', ROOT . 'logicoder/');
 
 /**
- * The public path to the project.
+ * Absolute path to the write enabled directory for logs, cache, uploads...
+ */
+define('DATA_ROOT', ROOT . 'data/');
+
+/**
+ * Applications folder.
+ */
+define('APPS_ROOT', ROOT . 'apps/');
+
+/**
+ * Absolute path to the directory that holds the project public files.
+ */
+define('PUBLIC_ROOT', ROOT);
+
+/**
+ * The public path to the project index file.
  */
 define('PROJECT_URL', 'http://' . $_SERVER['HTTP_HOST'] . str_replace('index' . EXT, '', $_SERVER['SCRIPT_NAME']));
 
@@ -68,19 +83,9 @@ define('PROJECT_INDEX', basename(__FILE__));
 /**
  * Absolute path to the directory that holds media for this project.
  */
-define('MEDIA_ROOT', PROJECT_ROOT . 'media/');
+define('MEDIA_ROOT', PUBLIC_ROOT . 'media/');
 
 /**
  * The base URL that handles the media served from MEDIA_ROOT.
  */
 define('MEDIA_URL', PROJECT_URL . 'media/');
-
-/**
- * Absolute path to the directory that holds the Logicoder framework.
- */
-define('LOGICODER_ROOT', ROOT . 'logicoder/');
-
-/**
- * Applications folder.
- */
-define('APPS_ROOT', ROOT . 'apps/');
