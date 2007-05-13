@@ -26,16 +26,19 @@ class Logicoder_Model_Field_IPAddress extends Logicoder_Model_Field_Char
     /**
      * Override default constructor.
      */
-    public function __construct ( $oModel, $sField, array $aOptions = array() )
+    public function __construct ( $sField, array $aOptions = array() )
     {
         /*
-            Override default values.
+            Override default values, if not set in model definition.
         */
-        $aOptions['maxlength'] = 15;
+        if (!isset($aOptions['maxlength']))
+        {
+            $aOptions['maxlength'] = 15;
+        }
         /*
             Call parent constructor.
         */
-        parent::__construct($oModel, $sField, $aOptions);
+        parent::__construct($sField, $aOptions);
     }
 }
 // END Logicoder_Model_Field_IPAddress class

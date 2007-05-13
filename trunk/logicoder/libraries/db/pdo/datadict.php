@@ -11,38 +11,28 @@
 // -----------------------------------------------------------------------------
 
 /**
- * PDO SQLite Database Driver library.
+ * ANSI SQL92 DDL Schema Builder class for PDO drivers.
  *
  * @package     Logicoder
  * @subpackage  Database
  * @link        http://www.logicoder.com/documentation/database.html
  * @author      Marco Del Tongo <info@marcodeltongo.com>
  */
-class Logicoder_DB_PDO_SQLite_Driver extends Logicoder_DB_PDO_Driver
+class Logicoder_DB_PDO_DataDict extends Logicoder_DB_DataDict
 {
-    // -------------------------------------------------------------------------
-    //  Overridden properties.
-    // -------------------------------------------------------------------------
-
-    /**
-     * The datadict builder class.
-     */
-    protected $sDataDictClass   = 'Logicoder_DB_PDO_SQLite_DataDict';
-
     // -------------------------------------------------------------------------
     //  Overloaded methods.
     // -------------------------------------------------------------------------
 
     /**
-     * Builds a DSN.
+     * Adds quotes to passed value.
      *
-     * @param   array   $aC         Connection parameters
+     * @param   string  $mVal   The value to quote
      *
-     * @return  string  The built DSN string
+     * @return string   The passed value quoted
      */
-    protected function __dsn ( array $aC )
+    public function quote ( $mVal )
     {
-        return str_replace('pdo_', '', strtolower($aC['DRIVER'])) . ':' . $aC['HOSTNAME'] . $aC['DATABASE'];
+        return (is_string($mVal)) ? PDO::quote($mVal) : $mVal;
     }
 }
-// END Logicoder_DB_PDO_SQLite_Driver class

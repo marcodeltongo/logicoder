@@ -21,7 +21,7 @@
  * @link        http://www.logicoder.com/documentation/models.html
  * @author      Marco Del Tongo <info@marcodeltongo.com>
  */
-class Logicoder_Model_Field_Integer extends Logicoder_Model_Field
+class Logicoder_Model_Field_Integer extends Logicoder_Model_Field_Abstract
 {
     /**
      * Define column type.
@@ -29,7 +29,7 @@ class Logicoder_Model_Field_Integer extends Logicoder_Model_Field
     public $db_type = 'I';
 
     /**
-     * An integer can be negative.
+     * Field is unsigned.
      */
     public $unsigned = false;
 }

@@ -54,6 +54,22 @@ class Logicoder extends Logicoder_ObjectRegistry implements Logicoder_iSingleton
     }
 
     /**
+     * Overload magic property getter method, returns object or throw exception.
+     *
+     * @param   string  $sKey       The name/key string
+     *
+     * @return  mixed   The key value
+     */
+    protected function __get ( $sKey )
+    {
+        if (!isset($this->aData[$sKey]))
+        {
+            throw new Logicoder_Exception("Can't find $sKey property.");
+        }
+        return $this->aData[$sKey];
+    }
+
+    /**
      * Overloaded magic function, returns object if called as method.
      *
      * @param   string  $sObject    Object name in the registry
@@ -85,6 +101,10 @@ class Logicoder extends Logicoder_ObjectRegistry implements Logicoder_iSingleton
                 return call_user_func_array(array($oReturn, $sMethod), $aParams);
             }
         }
+        else
+        {
+            throw new Logicoder_Exception("Can't find $sObject object called.");
+        }
         return $oReturn;
     }
 
@@ -93,6 +113,13 @@ class Logicoder extends Logicoder_ObjectRegistry implements Logicoder_iSingleton
      */
     private function __setup ( /* void */ )
     {
+        /*
+            Define we are setup.
+        */
+        if (!defined('LOGICODER'))
+        {
+            define('LOGICODER', true);
+        }
         /*
             Get the loader.
         */
@@ -146,6 +173,10 @@ class Logicoder extends Logicoder_ObjectRegistry implements Logicoder_iSingleton
         */
         try
         {
+            /*
+                Load main url mappings.
+            */
+            $this->router->load(ROUTER_FILE);
             /*
                 Let the router find the way...
             */

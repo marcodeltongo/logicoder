@@ -21,7 +21,7 @@
 class Logicoder_DB_PDO_Driver extends Logicoder_DB_Driver
 {
     // -------------------------------------------------------------------------
-    //  Overridable properties.
+    //  Overridden properties.
     // -------------------------------------------------------------------------
 
     /**
@@ -29,10 +29,44 @@ class Logicoder_DB_PDO_Driver extends Logicoder_DB_Driver
      */
     protected $sStmtClass       = 'Logicoder_DB_PDO_Statement';
 
+    /**
+     * The datadict builder class.
+     */
+    protected $sDataDictClass   = 'Logicoder_DB_PDO_DataDict';
+
+    // -------------------------------------------------------------------------
+    //  Overloaded methods.
+    // -------------------------------------------------------------------------
+
+    /**
+     * Adds quotes to passed value.
+     *
+     * @param   string  $mVal   The value to quote
+     *
+     * @return string   The passed value quoted
+     */
+    public function quote ( $mVal )
+    {
+        return (is_string($mVal)) ? PDO::quote($mVal) : $mVal;
+    }
 
     // -------------------------------------------------------------------------
     //  Abstract methods.
     // -------------------------------------------------------------------------
+
+    /**
+     * Builds a DSN.
+     *
+     * @param   array   $aC         Connection parameters
+     *
+     * @return  string  The built DSN string
+     */
+    protected function __dsn ( array $aC )
+    {
+        return str_replace('pdo_', '', strtolower($aC['DRIVER'])) .
+                                        ':host=' . $aC['HOSTNAME'] .
+                                        ';dbname=' . $aC['DATABASE'];
+    }
 
     /**
      * Open a connection to the database.
@@ -40,7 +74,7 @@ class Logicoder_DB_PDO_Driver extends Logicoder_DB_Driver
      * @param   array   $aConnect   Connection parameters
      * @param   array   $aOptions   Connection options
      */
-    function connect ( array $aConnect, array $aOptions = null )
+    public function connect ( array $aConnect, array $aOptions = null )
     {
         if (is_null($this->oDB))
         {
@@ -62,15 +96,12 @@ class Logicoder_DB_PDO_Driver extends Logicoder_DB_Driver
                     $aOptions[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
                 }
                 /*
-                    Prepare DSN.
-                */
-                $sDSN = str_replace('pdo_', '', strtolower($aConnect['DRIVER'])) .
-                                                ':host=' . $aConnect['HOSTNAME'] .
-                                                ';dbname=' . $aConnect['DATABASE'];
-                /*
                     Open connection.
                 */
-                $this->oDB = new PDO($sDSN, $aConnect['USERNAME'], $aConnect['PASSWORD'], (array)$aOptions);
+                $this->oDB = new PDO($this->__dsn($aConnect),
+                                     $aConnect['USERNAME'],
+                                     $aConnect['PASSWORD'],
+                                     (array)$aOptions);
             }
             catch (PDOException $oException)
             {
@@ -82,7 +113,7 @@ class Logicoder_DB_PDO_Driver extends Logicoder_DB_Driver
     /**
      * Close connection.
      */
-    function disconnect ( /* void */ )
+    public function disconnect ( /* void */ )
     {
         if (!is_null($this->oDB))
         {
@@ -97,7 +128,7 @@ class Logicoder_DB_PDO_Driver extends Logicoder_DB_Driver
      *
      * @return  object  Return a new Statement
      */
-    function prepare ( $mSQL )
+    public function prepare ( $mSQL )
     {
         /*
             Get a query string.

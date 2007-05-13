@@ -83,12 +83,12 @@ class Logicoder_Loader
         /*
             Search in project and in system directory, last directly.
         */
-        if (is_readable(PROJECT_ROOT . $sPath . $sFile))
+        if (is_readable(APPS_ROOT . $sPath . $sFile))
         {
             /*
                 The project files get the precedence.
             */
-            $sFile = PROJECT_ROOT . $sPath . $sFile ;
+            $sFile = APPS_ROOT . $sPath . $sFile ;
             /*
                 Prefix the name to get the class if not passed.
             */

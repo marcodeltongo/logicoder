@@ -101,6 +101,18 @@ abstract class Logicoder_DB_Driver
     }
 
     /**
+     * Adds quotes to passed value.
+     *
+     * @param   string  $mVal   The value to quote
+     *
+     * @return string   The passed value quoted
+     */
+    public function quote ( $mVal )
+    {
+        return (is_string($mVal)) ? '"' . addslashes($mVal) . '"' : $mVal;
+    }
+
+    /**
      * Prepare a new query SQL.
      *
      * @param   mixed   $mSQL       SQL string or object to prepare
@@ -240,7 +252,7 @@ abstract class Logicoder_DB_Driver
      * @param   mixed   $mSQL       SQL query string or object to run
      * @param   array   $aData      Data for bound vars
      *
-     * @return  mixed   True on success or false on failure
+     * @return  boolean True on success or false on failure
      */
     public function execute ( $mSQL, array $aData = null )
     {

@@ -26,10 +26,10 @@ class Logicoder_Model_Field_Auto extends Logicoder_Model_Field_Unsigned
     /**
      * Override default constructor.
      */
-    public function __construct ( $oModel, $sField, array $aOptions = array() )
+    public function __construct ( $sField, array $aOptions = array() )
     {
         /*
-            Override default values.
+            Force default options.
         */
         $aOptions['null'] = false;
         $aOptions['blank'] = false;
@@ -39,7 +39,7 @@ class Logicoder_Model_Field_Auto extends Logicoder_Model_Field_Unsigned
         /*
             Call parent constructor.
         */
-        parent::__construct($oModel, $sField, $aOptions);
+        parent::__construct($sField, $aOptions);
     }
 }
 // END Logicoder_Model_Field_Auto class

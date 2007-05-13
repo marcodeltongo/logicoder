@@ -11,6 +11,16 @@
 // -----------------------------------------------------------------------------
 
 /**
+ * Routing file path.
+ */
+if (!defined('ROUTES_PATH'))
+{
+    define('ROUTES_PATH', APPS_ROOT);
+}
+
+// -----------------------------------------------------------------------------
+
+/**
  * Router class.
  *
  * @package     Logicoder
@@ -194,20 +204,10 @@ class Logicoder_Router
         */
         $this->aSegments = array();
         /*
-            Route mappings.
+            Route mappings from parameter.
         */
-        if (is_null($aRoutes))
+        if (!is_null($aRoutes))
         {
-            /*
-                Load from system.
-            */
-            $this->load();
-        }
-        else
-        {
-            /*
-                Passed as parameter.
-            */
             $this->aRoutes = $aRoutes;
         }
         /*
@@ -261,13 +261,13 @@ class Logicoder_Router
      *
      * @return  array   Main or sub routes
      */
-    protected function load ( $sFile = ROUTER_FILE, $mKey = false )
+    public function load ( $sFile, $mKey = false )
     {
         /*
             Get URI routes.
         */
         ob_start();
-        $bOk = include $sFile;
+        $bOk = require(ROUTES_PATH . $sFile);
         ob_end_clean();
         /*
             Merge URI routes.
@@ -310,7 +310,7 @@ class Logicoder_Router
             /*
                 Check for sub-routes array.
             */
-            if (strpos($mRoute, '/' . ROUTER_FILE) !== false)
+            if (strpos($mRoute, ROUTER_FILE) !== false)
             {
                 $this->match($this->load($mRoute, $mPattern));
                 continue;
@@ -397,7 +397,7 @@ class Logicoder_Router
         /*
             Start the search with project overloaded controllers.
         */
-        if (is_dir(PROJECT_ROOT . 'controllers/'))
+        if (is_dir(APPS_ROOT . 'controllers/'))
         {
             /*
                 Search for project controllers.
@@ -407,7 +407,7 @@ class Logicoder_Router
         /*
             Get installed applications.
         */
-        $aApps = (class_exists('Logicoder')) ? Logicoder::instance()->settings->INSTALLED_APPS : array();
+        $aApps = (defined('LOGICODER')) ? Logicoder::instance()->settings->INSTALLED_APPS : array();
         /*
             Search in applications controllers.
         */
@@ -418,14 +418,14 @@ class Logicoder_Router
             */
             $sAppPath = $aApps[$this->aSegments[0]];
 
-            if (is_dir(PROJECT_ROOT . $sAppPath . '/controllers/'))
+            if (is_dir(APPS_ROOT . $sAppPath . '/controllers/'))
             {
                 /*
                     Check in controllers directory in application path.
                 */
                 $bFound = $this->_file_mapper($sAppPath . '/controllers/', 1);
             }
-            elseif (is_readable(PROJECT_ROOT . $sAppPath . '/controllers' . EXT))
+            elseif (is_readable(APPS_ROOT . $sAppPath . '/controllers' . EXT))
             {
                 /*
                     Use controllers file in application path.
@@ -444,8 +444,8 @@ class Logicoder_Router
                 /*
                     Save in application object.
                 */
-                Logicoder()->app->name = $this->aSegments[0];
-                Logicoder()->app->path = $sAppPath . '/';
+                Logicoder::instance()->app->name = $this->aSegments[0];
+                Logicoder::instance()->app->path = $sAppPath . '/';
             }
         }
         /*
@@ -458,7 +458,7 @@ class Logicoder_Router
         /*
             Try to load the controller class definition.
         */
-        Logicoder()->load->controller($this->sControllerFile, $this->sControllerPath, $this->sControllerClass, false);
+        Logicoder::instance()->load->controller($this->sControllerFile, $this->sControllerPath, $this->sControllerClass, false);
         /*
             Map action to named or index.
             The in-array is needed since method_exists returns also non-public methods !
