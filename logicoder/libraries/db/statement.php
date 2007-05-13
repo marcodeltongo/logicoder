@@ -26,11 +26,6 @@ abstract class Logicoder_DB_Statement implements IteratorAggregate
     protected $oStmt;
 
     /**
-     * Underlying DB object.
-     */
-    protected $oDB;
-
-    /**
      * Conversion table.
      */
     protected $aResultModes = array( DB_FETCH_ASSOC  => DB_FETCH_ASSOC,

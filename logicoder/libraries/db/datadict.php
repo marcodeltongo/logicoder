@@ -27,21 +27,36 @@ class Logicoder_DB_DataDict
     /**
      * Meta types to DB types table.
      */
-    public $aMetaTypes  = array(
-                        'C'  => 'VARCHAR­($maxlength)',
-                        'I'  => 'INTEGER',
-                        'U'  => 'INTEGER UNSIGNED',
-                        'F'  => 'NUMERIC($digits, $decimals)',
-                        'B'  => 'BOOL',
-                        'X'  => 'TEXT',
-                        'D'  => 'DATE',
-                        'T'  => 'TIME',
-                        'DT' => 'DATETIME');
+    public $aMetaTypes  = array (   'C'  => 'VARCHAR($maxlength)',
+                                    'I'  => 'INTEGER',
+                                    'U'  => 'INTEGER UNSIGNED',
+                                    'UZ' => 'INTEGER UNSIGNED ZEROFILL',
+                                    'F'  => 'NUMERIC($digits, $decimals)',
+                                    'B'  => 'BOOL',
+                                    'X'  => 'TEXT',
+                                    'D'  => 'DATE',
+                                    'T'  => 'TIME',
+                                    'DT' => 'DATETIME' );
 
     /**
      * DB types to meta types table.
      */
     public $aDBTypes    = false;
+
+    /**
+     * DB types attributes.
+     */
+    public $aDBAttrs    = array (   'NULL'              => ' NULL',
+                                    '!NULL'             => ' NOT NULL',
+                                    'DEFAULT'           => ' DEFAULT ',
+                                    'AUTOINC'           => ' AUTO_INCREMENT');
+
+    /**
+     * DB index types.
+     */
+    public $aDBIndex    = array (   'INDEX'             => 'KEY `%s` (`%s`)',
+                                    'UNIQUE'            => 'UNIQUE KEY `%s` (`%s`)',
+                                    'PRIMARY'           => 'PRIMARY KEY (`%s`)');
 
     /**
      * Database operations syntax.
@@ -80,32 +95,15 @@ class Logicoder_DB_DataDict
     // -------------------------------------------------------------------------
 
     /**
-     * Return the DB type for the passed meta type.
+     * Adds quotes to passed value.
+     *
+     * @param   string  $mVal   The value to quote
+     *
+     * @return string   The passed value quoted
      */
-    public function meta_to_db_type ( $sMetaType )
+    public function quote ( $mVal )
     {
-        /*
-            Return type if valid or null.
-        */
-        return (isset($this->aMetaTypes[$sFieldType])) ? $this->aMetaTypes[$sFieldType] : null;
-    }
-
-    /**
-     * Return the meta type for the passed db type.
-     */
-    public function db_to_meta_type ( $sDBType )
-    {
-        /*
-            Lazy building of the array.
-        */
-        if ($this->aDBTypes === false)
-        {
-            $this->aDBTypes = array_flip($this->aMetaTypes);
-        }
-        /*
-            Return type if valid or null.
-        */
-        return (isset($this->aMetaTypes[$sFieldType])) ? $this->aMetaTypes[$sFieldType] : null;
+        return (is_string($mVal)) ? '"' . addslashes($mVal) . '"' : $mVal;
     }
 
     /**
@@ -116,7 +114,7 @@ class Logicoder_DB_DataDict
         /*
             If already quoted, return it unchanged or quote it.
         */
-        if ( preg_match('/^`(.+)`$/', $sName, $aMatches = array()) ) {
+        if ( preg_match('/^`(.+)`$/', $sName) ) {
             return $sName;
         }
         return '`' . $sName . '`';
@@ -127,7 +125,7 @@ class Logicoder_DB_DataDict
      */
     public function unquote_name ( $sName )
     {
-        if ( preg_match('/^`(.+)`$/', $sName, $aMatches = array()) ) {
+        if ( preg_match('/`(.+)`/', $sName, $aMatches) ) {
             return $aMatches[1];
         }
         return $sName;
@@ -165,47 +163,90 @@ class Logicoder_DB_DataDict
     }
 
     /**
+     * Builds field with options from array.
+     *
+     * @param   array   $aField     Field information
+     *
+     * @return  string  DDL for the field
+     */
+    protected function __build_field ( array &$aField )
+    {
+        /*
+            Get name.
+        */
+        $sName = $this->quote_name($aField['db_column']);
+        /*
+            Get the metatype.
+        */
+        $sType = $this->aMetaTypes[$aField['db_type']];
+        /*
+            Replace the params, if needed.
+        */
+        if (strpos($sType, '$') !== false)
+        {
+            preg_match_all('/\$(\w*)/', $sType, $aMatches);
+
+            foreach ($aMatches[1] as $option)
+            {
+                $sType = str_replace('$'.$option, $aField[$option], $sType);
+            }
+        }
+        /*
+            Now the attributes, first is NULL or NOT NULL
+        */
+        $sAttr = (isset($aField['null']) and !$aField['null']) ? $this->aDBAttrs['!NULL'] : $this->aDBAttrs['NULL'];
+        /*
+            There's a default value ? If needed, escape it.
+        */
+        if (isset($aField['default']) and !is_null($aField['default']))
+        {
+            $sAttr .= $this->aDBAttrs['DEFAULT'];
+            $def = $aField['default'];
+            $sAttr .=  (is_string($def)) ? '"'.addslashes($def).'"' : $def;
+        }
+        /*
+            Auto-increment ?
+        */
+        $sAttr .= (isset($aField['auto_inc']) and $aField['auto_inc']) ? $this->aDBAttrs['AUTOINC'] : '';
+        /*
+            Append line.
+        */
+        return $sName . ' ' . $sType . $sAttr;
+    }
+
+    /**
      * Create a table.
      */
     public function create_table ( $sTableName, array $aFields = null )
     {
         $sql = sprintf($this->sCreateTable, $sTableName) . ' (';
+        $idx = '';
         /*
             Loop thru fields.
         */
         foreach ($aFields as $field)
         {
-            if (is_array($field) and isset($this->aMetaTypes[$field[1]]))
-            {
-                /*
-                    Get the name.
-                */
-                $line = $this->quote_name(array_shift($f));
-                /*
-                    Get the metatype.
-                */
-                $meta = $this->aMetaTypes[array_shift($f)];
-                /*
-                    Replace the params, if needed.
-                */
-                if (strpos($meta, '$') !== false)
-                {
-                    foreach ($field as $k => $v)
-                    {
-                        str_replace('$'.$k, $v, $meta);
-                    }
-                }
-                /*
-                    Append line.
-                */
-                $field = $name . ' ' . $meta;
-            }
             /*
-                Append line.
+                Create and append line.
             */
-            $sql .= "\n\t" . $field;
+            $sql .= "\n\t" . $this->__build_field($field) . ',';
+            /*
+                Should be indexed ?
+            */
+            if (isset($field['primary_key']) and $field['primary_key'] and isset($this->aDBIndex['PRIMARY']))
+            {
+                $idx .= "\n\t" . sprintf($this->aDBIndex['PRIMARY'], $field['db_column']) . ',';
+            }
+            elseif (isset($field['unique']) and $field['unique'] and isset($this->aDBIndex['UNIQUE']))
+            {
+                $idx .= "\n\t" . sprintf($this->aDBIndex['UNIQUE'], $field['db_column'], $field['db_column']) . ',';
+            }
+            elseif (isset($field['index']) and $field['index'] and isset($this->aDBIndex['INDEX']))
+            {
+                $idx .= "\n\t" . sprintf($this->aDBIndex['INDEX'], $field['db_column'], $field['db_column']) . ',';
+            }
         }
-        return $sql . "\n)";
+        return rtrim($sql . $idx, ',') . "\n)";
     }
 
     /**
@@ -245,26 +286,21 @@ class Logicoder_DB_DataDict
         /*
             Create index.
         */
-        $sql .= sprintf($sPattern, $sIndexName) . " (\n";
+        $sql .= sprintf($sPattern, $sIndexName) . " (";
         /*
             Save last.
         */
-        $last = array_pop($aFields);
         foreach ($aFields as $field)
         {
             /*
                 Indexed field.
             */
-            $sql .= $this->quote_name($field) . ",\n";
+            $sql .= "\n" . $this->quote_name($field) . ",";
         }
-        /*
-            Last field.
-        */
-        $sql .= $this->quote_name($last) . ")";
         /*
             Return SQL.
         */
-        return $sql;
+        return rtrim($sql, ',') . "\n)";
     }
 
     /**

@@ -52,7 +52,7 @@ class Logicoder_Application
         */
         if ($this->oData->get('APP', 'path') === null)
         {
-            $this->oData->set('APP', 'path', PROJECT_ROOT);
+            $this->oData->set('APP', 'path', APPS_ROOT);
         }
         /*
             Application name default.

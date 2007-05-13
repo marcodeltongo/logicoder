@@ -193,3 +193,59 @@ function random_unique_string ( $iLength )
     return md5(uniqid(mt_rand()));
 }
 // END random_unique_string function
+
+// -----------------------------------------------------------------------------
+
+/**
+ * Returns a singular version of a word
+ *
+ * Doesn't support irregular or non-english words.
+ *
+ * @param   string  $sWord      Word to make singular
+ *
+ * @return  string  Generated string
+ */
+function str_singular ( $sWord )
+{
+    if (is_string($sWord))
+    {
+        if (substr_compare($sWord, 'ies', -3, 3, true) === 0)
+        {
+            return substr($sWord, 0, -3) . 'y';
+        }
+        elseif (substr_compare($sWord, 's', -1, 1, true) === 0)
+        {
+            return substr($sWord, 0, -1);
+        }
+    }
+    return $sWord;
+}
+// END str_singular function
+
+// -----------------------------------------------------------------------------
+
+/**
+ * Returns a plural version of a word.
+ *
+ * Doesn't support irregular or non-english words.
+ *
+ * @param   string  $sWord      Word to make plural
+ *
+ * @return  string  Generated string
+ */
+function str_plural ( $sWord )
+{
+    if (is_string($sWord))
+    {
+        if (substr_compare($sWord, 'y', -1, 1, true) === 0)
+        {
+            return substr($sWord, 0, -1) . 'ies';
+        }
+        elseif(substr_compare($sWord, 's', -1, 1, true) !== 0)
+        {
+            return $sWord . 's';
+        }
+    }
+    return $sWord;
+}
+// END str_plural function

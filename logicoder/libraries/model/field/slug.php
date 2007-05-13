@@ -31,16 +31,19 @@ class Logicoder_Model_Field_Slug extends Logicoder_Model_Field_Char
     /**
      * Override default constructor.
      */
-    public function __construct ( $oModel, $sField, array $aOptions = array() )
+    public function __construct ( $sField, array $aOptions = array() )
     {
         /*
-            Override default values.
+            Override default values, if not set in model definition.
         */
-        $aOptions['index'] = true;
+        if (!isset($aOptions['index']))
+        {
+            $aOptions['index'] = true;
+        }
         /*
             Call parent constructor.
         */
-        parent::__construct($oModel, $sField, $aOptions);
+        parent::__construct($sField, $aOptions);
     }
 }
 // END Logicoder_Model_Field_Slug class

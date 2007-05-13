@@ -18,7 +18,7 @@
  * @link        http://www.logicoder.com/documentation/database.html
  * @author      Marco Del Tongo <info@marcodeltongo.com>
  */
-class Logicoder_DB_PDO_Statement extends Logicoder_DB_Driver
+class Logicoder_DB_PDO_Statement extends Logicoder_DB_Statement
 {
     /**
      * Overloaded conversion table.
@@ -80,7 +80,7 @@ class Logicoder_DB_PDO_Statement extends Logicoder_DB_Driver
     public function execute ( array $aData = null )
     {
         $this->oStmt->closeCursor();
-        return $this->oStmt->execute((array)$aData);
+        return $this->oStmt->execute($aData);
     }
 
     /**

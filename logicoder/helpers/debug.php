@@ -182,7 +182,7 @@ function var_name ( $mVar, $sFunction = 'var_name' )
             Find function call.
         */
         preg_match('|\b'.$sFunction.'\s*\(\s*([^()]+)\s*|', $sCode, $aMatches);
-        return $aMatches[1];
+        return (isset($aMatches[1])) ? $aMatches[1] : $sCode;
     }
     return '';
 }

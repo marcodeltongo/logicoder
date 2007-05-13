@@ -30,7 +30,7 @@
  * This setting is useful to manage different settings between development and
  * deployment servers like database connections or directories location.
  */
-define('DEVELOPMENT', ($_SERVER['HTTP_HOST'] == 'localhost'));
+define('DEVELOPMENT', false); #($_SERVER['HTTP_HOST'] == 'localhost'));
 
 /**
  * Run in debug mode or live mode ?

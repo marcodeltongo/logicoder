@@ -26,7 +26,7 @@ $this['AUTOCONNECT'] = true;
 
     See documentation for available drivers.
 */
-$this['DRIVER'] = (DEVELOPMENT) ? 'PDO_SQLite' : 'PHP_MySQLi';
+$this['DRIVER'] = (DEVELOPMENT) ? 'PDO_SQLite' : 'PDO_MySQL';
 
 /*
     The DB server hostname or path to the database.
@@ -62,3 +62,8 @@ $this['CHARSET'] = 'utf8';
     Wheter to use a persistent connection or not.
 */
 $this['PERSISTENT'] = false;
+
+/*
+    Run in debug mode or live mode ?
+*/
+$this['DEBUG'] = DEBUG;

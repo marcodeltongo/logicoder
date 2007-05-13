@@ -21,7 +21,7 @@
  * @link        http://www.logicoder.com/documentation/models.html
  * @author      Marco Del Tongo <info@marcodeltongo.com>
  */
-class Logicoder_Model_Field_Float extends Logicoder_Model_Field
+class Logicoder_Model_Field_Float extends Logicoder_Model_Field_Abstract
 {
     /**
      * Define column type.

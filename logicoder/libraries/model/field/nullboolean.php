@@ -26,12 +26,15 @@ class Logicoder_Model_Field_NullBoolean extends Logicoder_Model_Field_Boolean
     /**
      * Override default constructor.
      */
-    public function __construct ( $oModel, $sField, array $aOptions = array() )
+    public function __construct ( $sField, array $aOptions = array() )
     {
         /*
-            Override default values.
+            Force default options.
         */
         $aOptions['null'] = true;
+        /*
+            Override default values, if not set in model definition.
+        */
         if (!isset($aOptions['choices']))
         {
             $aOptions['choices'] = array('N/D','Yes','No');
@@ -39,7 +42,7 @@ class Logicoder_Model_Field_NullBoolean extends Logicoder_Model_Field_Boolean
         /*
             Call parent constructor.
         */
-        parent::__construct($oModel, $sField, $aOptions);
+        parent::__construct($sField, $aOptions);
     }
 }
 // END Logicoder_Model_Field_NullBoolean class

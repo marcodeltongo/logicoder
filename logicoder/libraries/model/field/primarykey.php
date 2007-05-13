@@ -26,16 +26,16 @@ class Logicoder_Model_Field_PrimaryKey extends Logicoder_Model_Field_Auto
     /**
      * Override default constructor.
      */
-    public function __construct ( $oModel, $sField, array $aOptions = array() )
+    public function __construct ( $sField, array $aOptions = array() )
     {
         /*
-            Override default values.
+            Force default options.
         */
         $aOptions['primary_key'] = true;
         /*
             Call parent constructor.
         */
-        parent::__construct($oModel, $sField, $aOptions);
+        parent::__construct($sField, $aOptions);
     }
 }
 // END Logicoder_Model_Field_PrimaryKey class

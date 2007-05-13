@@ -21,11 +21,6 @@
 abstract class Logicoder_Model_Field_Abstract
 {
     /**
-     * Parent model.
-     */
-    public $model;
-
-    /**
      * Field label.
      */
     public $label;
@@ -68,7 +63,7 @@ abstract class Logicoder_Model_Field_Abstract
     /**
      * Field default value.
      */
-    public $default          = '';
+    public $default          = null;
 
     /**
      * Field can be edited.
@@ -120,12 +115,8 @@ abstract class Logicoder_Model_Field_Abstract
     /**
      *  Constructor.
      */
-    public function __construct ( $oModel, $sField, array $aOptions = array() )
+    public function __construct ( $sField, array $aOptions = array() )
     {
-        /*
-            Save model reference.
-        */
-        $this->model = $oModel;
         /*
             Column name.
         */
@@ -133,19 +124,24 @@ abstract class Logicoder_Model_Field_Abstract
 		/*
             Set passed options, if any.
 		*/
+        $aVars = get_object_vars($this);
 		foreach ($aOptions as $k => $v)
 		{
             /*
                 Prepare key name.
             */
-            $k = str_replace(' ', '_', strtolower($k));
+            $k = strtolower($k);
             /*
                 Set only if defined.
             */
-			if (isset($this->$k))
+			if (in_array($k, $aVars)) # Should use (array)$this ?
 			{
 				$this->$k = $v;
 			}
+            else
+            {
+                throw new Logicoder_Model_Exception("Unknown property '$k' = $v");
+            }
 		}
         /*
             Prepare label.

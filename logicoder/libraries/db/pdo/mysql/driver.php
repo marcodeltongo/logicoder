@@ -18,10 +18,19 @@
  * @link        http://www.logicoder.com/documentation/database.html
  * @author      Marco Del Tongo <info@marcodeltongo.com>
  */
-class Logicoder_DB_PDO_MySQL_Driver extends Logicoder_DB_Driver
+class Logicoder_DB_PDO_MySQL_Driver extends Logicoder_DB_PDO_Driver
 {
     // -------------------------------------------------------------------------
-    //  OVERLOADED METHODS
+    //  Overridden properties.
+    // -------------------------------------------------------------------------
+
+    /**
+     * The datadict builder class.
+     */
+    protected $sDataDictClass   = 'Logicoder_DB_PDO_MySQL_DataDict';
+
+    // -------------------------------------------------------------------------
+    //  Overloaded methods.
     // -------------------------------------------------------------------------
 
     /**

@@ -258,11 +258,9 @@ class Logicoder_DB_Query
         */
         $sql .= (empty($this->aFields)) ? '' : "\n(" . implode(', ', $this->aFields) . ')';
         /*
-            Values ?
-
-            TODO: Add value type support for strings ecc... !
+            Insert values.
         */
-        $sql .= "\nVALUES ('" . implode(', ', $this->aValues) . '\')';
+        $sql .= "\nVALUES (" . implode(", ", $this->aValues) . ")";
         /*
             Return SQL.
         */
@@ -289,7 +287,7 @@ class Logicoder_DB_Query
         {
             $sql .= $f . ' = ' . $this->aValues[$k] . ', ';
         }
-        $sql = trim($sql, ', ');
+        $sql = rtrim($sql, ', ');
         /*
             Where ?
         */
