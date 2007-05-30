@@ -41,8 +41,20 @@ class Logicoder_Loader
      */
     public function __autoload ( $sClassName )
     {
-        $sClassName = str_replace('Logicoder_', '', $sClassName);
-        $this->__load($sClassName, 'libraries/');
+        /*
+            Auto-detect application models.
+        */
+        if (strpos($sClassName, 'Logicoder_Model') === false
+            and strpos($sClassName, '_Model') !== false)
+        {
+            return $this->model(str_replace('_Model', '', $sClassName));
+        }
+        /*
+            Should be a library.
+
+            - Remove 'Logicoder_' prefix to allow for library overloading.
+        */
+        return $this->library(str_replace('Logicoder_', '', $sClassName));
     }
 
     /**
@@ -80,24 +92,36 @@ class Logicoder_Loader
             $sFile = str_replace('_', '/', strtolower($sName));
         }
         $sFile .= EXT;
+
         /*
-            Search in project and in system directory, last directly.
+            Search in project, apps, core and directly.
         */
         if (is_readable(APPS_ROOT . $sPath . $sFile))
         {
             /*
-                The project files get the precedence.
+                Found an overloader in project/path.
             */
-            $sFile = APPS_ROOT . $sPath . $sFile ;
+            $sFile = APPS_ROOT . $sPath . $sFile;
             /*
-                Prefix the name to get the class if not passed.
+                Set the class if not passed.
             */
-            $sClass = ($sClass) ? $sClass : PROJECT_NAME.'_'.$sName;
+            $sClass = ($sClass) ? $sClass : $sName;
+        }
+        elseif (defined('APP_PATH') and is_readable(APPS_ROOT . APP_PATH . $sPath . $sFile))
+        {
+            /*
+                Found an overloader in project/path.
+            */
+            $sFile = APPS_ROOT . APP_PATH . $sPath . $sFile;
+            /*
+                Set the class if not passed.
+            */
+            $sClass = ($sClass) ? $sClass : $sName;
         }
         elseif (is_readable(LOGICODER_ROOT . $sPath . $sFile))
         {
             /*
-                Use the supplied core file.
+                Found in the core distribution.
             */
             $sFile = LOGICODER_ROOT . $sPath . $sFile;
             /*
@@ -105,9 +129,9 @@ class Logicoder_Loader
             */
             $sClass = ($sClass) ? $sClass : 'Logicoder_'.$sName;
         }
-        elseif (!is_readable($sFile))
+        elseif (!is_readable($sPath . $sFile))
         {
-            throw new Exception("Can't find class file for '$sName' which I searched as '$sFile'.");
+            throw new Exception("Can't find class file for '$sName' which I searched in '$sPath$sFile'.", 404);
         }
         /*
             Load the class/module file.
@@ -221,9 +245,24 @@ class Logicoder_Loader
         */
         $sClass = ($sClass === false) ? ucfirst($sName) . '_Model' : $sClass;
         /*
-            Load the model class file.
+            Try to load the model.
         */
-        return $this->__load($sClass, $sPath, strtolower($sName), $sClass);
+        try
+        {
+            $sClass = $this->__load($sClass, $sPath, strtolower($sName), $sClass);
+        }
+        catch (Exception $e)
+        {
+            if ($e->getCode() !== 404)
+            {
+                throw $e;
+            }
+            /*
+                Try to search for models file in application path.
+            */
+            return $this->__load($sClass, '', 'models', $sClass, true);
+        }
+        return $sClass;
     }
 
     /**

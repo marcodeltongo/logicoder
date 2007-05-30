@@ -136,7 +136,7 @@ function array2list ( $sTag, array $aData, $sId = null, $mCls = null )
                 If key is a string, prepare to use it, then build the sub-list.
             */
             $key = (is_int($key)) ? '' : $key . " ";
-            $item = array2list($sTag, $item);
+            $item = $key . array2list($sTag, $item);
         }
         $html .= str_repeat("\t", $tabLevel) . "<li>$item</li>\n";
     }
@@ -153,6 +153,66 @@ function array2list ( $sTag, array $aData, $sId = null, $mCls = null )
     return "<$sTag$sId$mCls>" . $html . str_repeat("\t", $tabLevel) . "</$sTag>";
 }
 // END array2list function
+
+// -----------------------------------------------------------------------------
+
+/**
+ * Builds a list of a:hrefs from an array.
+ *
+ * @param   string  $sTag       Tag to use
+ * @param   array   $aData      Source data array
+ * @param   string  $sId        The ID attribute
+ * @param   mixed   $mCls       String or array of classes
+ *
+ * @return  string  HTML string
+ */
+function array2alist ( $sTag, array $aData, $sId = null, $mCls = null )
+{
+    if (is_null($aData) or empty($aData))
+    {
+        return '';
+    }
+    /*
+        Indentation level.
+    */
+    static $tabLevel = 0;
+    ++$tabLevel;
+    /*
+        Loop over items.
+    */
+    $html = "\n";
+    foreach ($aData as $key => $item)
+    {
+        /*
+            Go in a deeper level if it's an array.
+        */
+        if (is_array($item))
+        {
+            $item = array2alist($sTag, $item);
+            $html .= str_repeat("\t", $tabLevel) . "<li>$key $item</li>\n";
+        }
+        elseif (is_int($key))
+        {
+            $html .= str_repeat("\t", $tabLevel) . "<li>$item</li>\n";
+        }
+        else
+        {
+            $html .= str_repeat("\t", $tabLevel) . "<li><a href='$item'>$key</a></li>\n";
+        }
+    }
+    --$tabLevel;
+    /*
+        Prepare id and class(es).
+    */
+    $sId = (is_null($sId)) ? '' : " id='$sId'";
+    $mCls = (is_null($mCls)) ? '' :
+            ((is_array($mCls)) ? " class='" . implode($mCls, ' ') . "'" : " class='$mCls'");
+    /*
+        Build and return.
+    */
+    return "<$sTag$sId$mCls>" . $html . str_repeat("\t", $tabLevel) . "</$sTag>";
+}
+// END array2alist function
 
 // -----------------------------------------------------------------------------
 
@@ -187,6 +247,40 @@ function ol ( array $aData, $sId = null, $mCls = null )
     return array2list('ol', $aData, $sId, $mCls);
 }
 // END ol function
+
+// -----------------------------------------------------------------------------
+
+/**
+ * Builds a unordered list from an array.
+ *
+ * @param   array   $aData      Source data array
+ * @param   string  $sId        The ID attribute
+ * @param   mixed   $mCls       String or array of classes
+ *
+ * @return  string  HTML string
+ */
+function ul_a ( array $aData, $sId = null, $mCls = null )
+{
+    return array2alist('ul', $aData, $sId, $mCls);
+}
+// END ul_a function
+
+// -----------------------------------------------------------------------------
+
+/**
+ * Builds an ordered list from an array.
+ *
+ * @param   array   $aData      Source data array
+ * @param   string  $sId        The ID attribute
+ * @param   mixed   $mCls       String or array of classes
+ *
+ * @return  string  HTML string
+ */
+function ol_a ( array $aData, $sId = null, $mCls = null )
+{
+    return array2alist('ol', $aData, $sId, $mCls);
+}
+// END ol_a function
 
 // -----------------------------------------------------------------------------
 

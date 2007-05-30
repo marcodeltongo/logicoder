@@ -25,6 +25,11 @@ class Logicoder_DB_PDO_MySQL_Driver extends Logicoder_DB_PDO_Driver
     // -------------------------------------------------------------------------
 
     /**
+     * The query builder class.
+     */
+    protected $sQueryClass      = 'Logicoder_DB_PDO_MySQL_Query';
+
+    /**
      * The datadict builder class.
      */
     protected $sDataDictClass   = 'Logicoder_DB_PDO_MySQL_DataDict';

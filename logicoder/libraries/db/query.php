@@ -96,6 +96,8 @@ class Logicoder_DB_Query
     protected $nOffset;
 
     // -------------------------------------------------------------------------
+    //  Constructor and magic methods.
+    // -------------------------------------------------------------------------
 
     /**
      * Constructor
@@ -114,7 +116,7 @@ class Logicoder_DB_Query
     }
 
     // -------------------------------------------------------------------------
-    //  SQL GENERATION METHODS
+    //  SQL generation methods.
     // -------------------------------------------------------------------------
 
     /**
@@ -123,11 +125,20 @@ class Logicoder_DB_Query
     public function sql ( /* void */ )
     {
         /*
-            No method, nothing to return.
+            Never used or not complete ?
         */
-        if ($this->sMethod === false)
+        if (($this->sMethod === false))
         {
-            return null;
+            if (empty($this->aFields) and empty($this->aValues) and
+                empty($this->aTables) and empty($this->aJoin) and
+                empty($this->aWhere) and empty($this->aLike))
+            {
+                return null;
+            }
+            else
+            {
+                return false;
+            }
         }
         /*
             Switch by method.
@@ -168,27 +179,12 @@ class Logicoder_DB_Query
         */
         if (!empty($this->aWhere))
         {
-            $sql .= "\nWHERE ";
-            foreach ($this->aWhere as $i)
-            {
-                $sql .= "\n{$i[0]}{$i[1]} {$i[2]}";
-            }
-            if (!empty($this->aLike))
-            {
-                $sql .= "\nAND ";
-                foreach ($this->aLike as $i)
-                {
-                    $sql .= "\n{$i[0]}{$i[1]} LIKE '%{$i[2]}%'";
-                }
-            }
+            $sql .= "\nWHERE " . implode("\n", $this->aWhere);
+            $sql .= (!empty($this->aLike)) ? implode("\n", $this->aLike) : '';
         }
         elseif (!empty($this->aLike))
         {
-            $sql .= "\nWHERE ";
-            foreach ($this->aLike as $i)
-            {
-                $sql .= "\n{$i[0]}{$i[1]} LIKE '%{$i[2]}%'";
-            }
+            $sql .= "\nWHERE " . implode("\n", $this->aLike);
         }
         /*
             Group by ?
@@ -293,27 +289,12 @@ class Logicoder_DB_Query
         */
         if (!empty($this->aWhere))
         {
-            $sql .= "\nWHERE ";
-            foreach ($this->aWhere as $i)
-            {
-                $sql .= "\n{$i[0]}{$i[1]} {$i[2]}";
-            }
-            if (!empty($this->aLike))
-            {
-                $sql .= "\nAND ";
-                foreach ($this->aLike as $i)
-                {
-                    $sql .= "\n{$i[0]}{$i[1]} {$i[2]}";
-                }
-            }
+            $sql .= "\nWHERE " . implode("\n", $this->aWhere);
+            $sql .= (!empty($this->aLike)) ? implode("\n", $this->aLike) : '';
         }
         elseif (!empty($this->aLike))
         {
-            $sql .= "\nWHERE ";
-            foreach ($this->aLike as $i)
-            {
-                $sql .= "\n{$i[0]}{$i[1]} {$i[2]}";
-            }
+            $sql .= "\nWHERE " . implode("\n", $this->aLike);
         }
         /*
             Return SQL.
@@ -339,27 +320,12 @@ class Logicoder_DB_Query
         */
         if (!empty($this->aWhere))
         {
-            $sql .= "\nWHERE ";
-            foreach ($this->aWhere as $i)
-            {
-                $sql .= "\n{$i[0]}{$i[1]} {$i[2]}";
-            }
-            if (!empty($this->aLike))
-            {
-                $sql .= "\nAND ";
-                foreach ($this->aLike as $i)
-                {
-                    $sql .= "\n{$i[0]}{$i[1]} {$i[2]}";
-                }
-            }
+            $sql .= "\nWHERE " . implode("\n", $this->aWhere);
+            $sql .= (!empty($this->aLike)) ? implode("\n", $this->aLike) : '';
         }
         elseif (!empty($this->aLike))
         {
-            $sql .= "\nWHERE ";
-            foreach ($this->aLike as $i)
-            {
-                $sql .= "\n{$i[0]}{$i[1]} {$i[2]}";
-            }
+            $sql .= "\nWHERE " . implode("\n", $this->aLike);
         }
         /*
             Return SQL.
@@ -384,8 +350,14 @@ class Logicoder_DB_Query
         $this->aOrderBy = array();
         $this->nLimit   = false;
         $this->nOffset  = false;
+        /*
+            Return for method chaining.
+        */
+        return $this;
     }
 
+    // -------------------------------------------------------------------------
+    //  SELECT methods.
     // -------------------------------------------------------------------------
 
     /**
@@ -393,7 +365,6 @@ class Logicoder_DB_Query
      */
     public function select ( $mFields = array('*'), $sTable = null )
     {
-        $this->clean();
         /*
             Set query method/type.
         */
@@ -434,7 +405,7 @@ class Logicoder_DB_Query
         {
             $mFields = implode(', ', $mFields);
         }
-        $mFields = array('count(' . $mFields . ')');
+        $mFields = array('COUNT(' . $mFields . ')');
         /*
             Use select method.
         */
@@ -475,12 +446,16 @@ class Logicoder_DB_Query
         /*
             Save.
         */
-        $this->aTables = array_merge($this->aTables, $mTables);
+        $this->aTables = $mTables;
         /*
             Return for method chaining.
         */
         return $this;
     }
+
+    // -------------------------------------------------------------------------
+    //  CONDITIONS methods.
+    // -------------------------------------------------------------------------
 
     /**
      * Set tables to join.
@@ -531,11 +506,11 @@ class Logicoder_DB_Query
             */
             if (empty($this->aWhere))
             {
-                $this->aWhere[] = array('', $k, $v);
+                $this->aWhere[] = $k . ' ' . $v;
             }
             else
             {
-                $this->aWhere[] = array($sMethod . ' ', $k, $v);
+                $this->aWhere[] = $sMethod . ' ' . $k . ' ' . $v;
             }
         }
         /*
@@ -583,13 +558,17 @@ class Logicoder_DB_Query
         */
         foreach ($mFields as $k => $v)
         {
+            if (strpos($v, '%') === false)
+            {
+                $v = "%$v%";
+            }
             if (empty($this->aLike))
             {
-                $this->aLike[] = array('', $k, $v);
+                $this->aLike[] = "$k LIKE '$v'";
             }
             else
             {
-                $this->aLike[] = array($sMethod . ' ', $k, $v);
+                $this->aLike[] = "$sMethod $k LIKE '$v'";
             }
         }
         /*
@@ -775,13 +754,14 @@ class Logicoder_DB_Query
     }
 
     // -------------------------------------------------------------------------
+    //  INSERT, UPDATE and DELETE methods.
+    // -------------------------------------------------------------------------
 
     /**
      * Insert query.
      */
     public function insert ( array $aFields, $sTable = null )
     {
-        $this->clean();
         /*
             Set query method/type.
         */
@@ -803,7 +783,7 @@ class Logicoder_DB_Query
         */
         if (!is_null($sTable))
         {
-            $this->aTables[] = trim($sTable);
+            $this->aTables = array(trim($sTable));
         }
         /*
             Return for method chaining.
@@ -828,7 +808,6 @@ class Logicoder_DB_Query
      */
     public function update ( $sTable, array $aFields = null, array $aValues = null )
     {
-        $this->clean();
         /*
             Set query method/type.
         */
@@ -879,7 +858,6 @@ class Logicoder_DB_Query
      */
     public function delete ( $sTable = null, array $aFields = null )
     {
-        $this->clean();
         /*
             Set query method/type.
         */
@@ -902,6 +880,314 @@ class Logicoder_DB_Query
             Return for method chaining.
         */
         return $this;
+    }
+
+    // -------------------------------------------------------------------------
+    //  FILTERING methods.
+    // -------------------------------------------------------------------------
+
+    /**
+     * Extracts filter informations.
+     *
+     * @param   string  $sFilter    Field and Filter names.
+     *
+     * @return  mixed   Filter informations array or false
+     */
+    public function __filter_info ( $sFilter )
+    {
+        $aInfo = array();
+        $aParts = explode('__', $sFilter);
+        /*
+            Detect string type.
+        */
+        switch (count($aParts))
+        {
+            case 2:
+                /*
+                    Field__Filter
+                */
+                $aInfo['_table'] = false;
+                $aInfo['_field'] = $aParts[0];
+                $aInfo['filter'] = $aParts[1];
+                $aInfo['column'] = $aParts[0];
+            break;
+
+            case 3:
+                /*
+                    Table__Field__Filter
+                */
+                $aInfo['_table'] = $aParts[0];
+                $aInfo['_field'] = $aParts[1];
+                $aInfo['filter'] = $aParts[2];
+                $aInfo['column'] = $aParts[0] . '.' . $aParts[1];
+            break;
+
+            default:
+                return false;
+        }
+        return $aInfo;
+    }
+
+    /**
+     * Overloaded magic function, apply filter if found.
+     *
+     * @param   string  $sFilter    Field and Filter names.
+     * @param   array   $aParams    Values for filters.
+     */
+    public function __call ( $sFilter, $aParams )
+    {        
+        /*
+            Get filter informations.
+        */
+        $aInfo = $this->__filter_info($sFilter);
+        /*
+            Is this a negative filter ?
+        */
+        $aInfo['filter'] = '__' . str_replace('not_', '', $aInfo['filter'], $iNot);
+        /*
+            Method should now be found.
+        */
+        if (!method_exists($this, $aInfo['filter']))
+        {
+            throw new Exception("Filter $sFilter not found or can't be translated.");
+        }
+        /*
+            Add field to parameters.
+        */
+        array_unshift($aParams, $aInfo['column']);
+        /*
+            Call method with parameters.
+        */
+        $sSQL = call_user_func_array(array(&$this, $aInfo['filter']), $aParams);
+        /*
+            Apply negation if required.
+        */
+        if ($iNot === 1)
+        {
+            $sSQL = "NOT ($sSQL)";
+        }
+        /*
+            Save line.
+        */
+        $this->aWhere[] = (empty($this->aWhere)) ? $sSQL : 'AND ' . $sSQL;
+        /*
+            Return for method chaining.
+        */
+        return $this;
+    }
+
+    /**
+     * Adds a case-sensitive comparison filter to query.
+     *
+     * @param   string  $sField     Field name
+     * @param   mixed   $mValue     Value for filter or placeholder
+     *
+     * @return  string  SQL for the WHERE clause
+     */
+    public function __is ( $sField, $mValue )
+    {
+        return "$sField = $mValue";
+    }
+
+    /**
+     * Adds a case-insensitive comparison filter to query.
+     *
+     * @param   string  $sField     Field name
+     * @param   mixed   $mValue     Value for filter or placeholder
+     *
+     * @return  string  SQL for the WHERE clause
+     */
+    public function __iis ( $sField, $mValue )
+    {
+        return "$sField LIKE $mValue";
+    }
+
+    /**
+     * Adds a case-sensitive string matching filter to query.
+     *
+     * @param   string  $sField     Field name
+     * @param   mixed   $mValue     Value for filter or placeholder
+     *
+     * @return  string  SQL for the WHERE clause
+     */
+    public function __contains ( $sField, $mValue )
+    {
+        // There's a standard way to force case sensitive LIKE ???
+        return "$sField LIKE $mValue";
+    }
+
+    /**
+     * Adds a case-insensitive string matching filter to query.
+     *
+     * @param   string  $sField     Field name
+     * @param   mixed   $mValue     Value for filter or placeholder
+     *
+     * @return  string  SQL for the WHERE clause
+     */
+    public function __icontains ( $sField, $mValue )
+    {
+        return "$sField LIKE $mValue";
+    }
+
+    /**
+     * Adds a greater than filter to query.
+     *
+     * @param   string  $sField     Field name
+     * @param   mixed   $mValue     Value for filter or placeholder
+     *
+     * @return  string  SQL for the WHERE clause
+     */
+    public function __gt ( $sField, $mValue )
+    {
+        return "$sField > $mValue";
+    }
+
+    /**
+     * Adds a greater than or equal filter to query.
+     *
+     * @param   string  $sField     Field name
+     * @param   mixed   $mValue     Value for filter or placeholder
+     *
+     * @return  string  SQL for the WHERE clause
+     */
+    public function __gte ( $sField, $mValue )
+    {
+        return "$sField >= $mValue";
+    }
+
+    /**
+     * Adds a lower than filter to query.
+     *
+     * @param   string  $sField     Field name
+     * @param   mixed   $mValue     Value for filter or placeholder
+     *
+     * @return  string  SQL for the WHERE clause
+     */
+    public function __lt ( $sField, $mValue )
+    {
+        return "$sField < $mValue";
+    }
+
+    /**
+     * Adds a lower than or equal filter to query.
+     *
+     * @param   string  $sField     Field name
+     * @param   mixed   $mValue     Value for filter or placeholder
+     *
+     * @return  string  SQL for the WHERE clause
+     */
+    public function __lte ( $sField, $mValue )
+    {
+        return "$sField <= $mValue";
+    }
+
+    /**
+     * Adds an in a given list filter to query.
+     *
+     * @param   string  $sField     Field name
+     * @param   mixed   $mValues    Values for filter or placeholders
+     *
+     * @return  string  SQL for the WHERE clause
+     */
+    public function __in ( $sField, $mValues )
+    {
+        /*
+            Prepare from parameters.
+        */
+        if (is_array($mValues))
+        {
+            /*
+                Convert array into string.
+            */
+            $mValues = implode(', ', $mValues);
+        }
+        elseif (func_num_args() > 2)
+        {
+            /*
+                Use passed paramaters from the 2nd to last to build the string.
+            */
+            $aParams = func_get_args();
+            array_shift($aParams);
+            $mValues = implode(', ', $aParams);
+        }
+        return "$sField IN ($mValues)";
+    }
+
+    /**
+     * Adds an in a range filter to query.
+     *
+     * @param   string  $sField     Field name
+     * @param   mixed   $mLower     Lower value for filter or placeholder
+     * @param   mixed   $mHigher    Higher value for filter or placeholder
+     *
+     * @return  string  SQL for the WHERE clause
+     */
+    public function __between ( $sField, $mLower, $mHigher )
+    {
+        return "$sField BETWEEN $mLower AND $mHigher";
+    }
+
+    /**
+     * Adds a year filter to query.
+     *
+     * @param   string  $sField     Field name
+     * @param   mixed   $mValue     Value for filter or placeholder
+     *
+     * @return  string  SQL for the WHERE clause
+     */
+    public function __year ( $sField, $mValue )
+    {
+        return "EXTRACT(YEAR FROM $sField) = $mValue";
+    }
+
+    /**
+     * Adds a month filter to query.
+     *
+     * @param   string  $sField     Field name
+     * @param   mixed   $mValue     Value for filter or placeholder
+     *
+     * @return  string  SQL for the WHERE clause
+     */
+    public function __month ( $sField, $mValue )
+    {
+        return "EXTRACT(MONTH FROM $sField) = $mValue";
+    }
+
+    /**
+     * Adds a day filter to query.
+     *
+     * @param   string  $sField     Field name
+     * @param   mixed   $mValue     Value for filter or placeholder
+     *
+     * @return  string  SQL for the WHERE clause
+     */
+    public function __day ( $sField, $mValue )
+    {
+        return "EXTRACT(DAY FROM $sField) = $mValue";
+    }
+
+    /**
+     * Adds a null filter to query.
+     *
+     * @param   string  $sField     Field name
+     *
+     * @return  string  SQL for the WHERE clause
+     */
+    public function __null ( $sField )
+    {
+        return "$sField IS NULL";
+    }
+
+    /**
+     * Adds a not null filter to query.
+     *
+     * @param   string  $sField     Field name
+     *
+     * @return  string  SQL for the WHERE clause
+     */
+    public function __notnull ( $sField )
+    {
+        return "$sField IS NOT NULL";
     }
 }
 // END Logicoder_DB_Query class

@@ -43,7 +43,7 @@ $this['ACTIVE'] = true;
 /*
     Default language to use if not elsewhere defined.
 */
-$this['DEFAULT'] = 'it';
+$this['DEFAULT'] = 'en';
 
 /*
     All available languages.

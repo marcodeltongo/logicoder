@@ -46,7 +46,7 @@ interface Logicoder_iRegistry
      */
     public function unregister ( $sKey );
     /**
-     * Returns the value of $sKey is in the registry.
+     * Returns the value of $sKey in the registry.
      */
     public function get ( $sKey );
     /**

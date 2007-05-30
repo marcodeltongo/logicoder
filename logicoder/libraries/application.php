@@ -47,20 +47,6 @@ class Logicoder_Application
         {
             $this->oData = new Logicoder_Settings();
         }
-        /*
-            Application path default.
-        */
-        if ($this->oData->get('APP', 'path') === null)
-        {
-            $this->oData->set('APP', 'path', APPS_ROOT);
-        }
-        /*
-            Application name default.
-        */
-        if ($this->oData->get('APP', 'name') === null)
-        {
-            $this->oData->set('APP', 'name', '');
-        }
     }
 
     /**

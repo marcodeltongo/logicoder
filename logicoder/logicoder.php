@@ -169,6 +169,10 @@ class Logicoder extends Logicoder_ObjectRegistry implements Logicoder_iSingleton
             $this->register('db', $this->load->library('DB_Factory', true));
         }
         /*
+            Load models registry.
+        */
+        $this->register('models', $this->load->library('Model_Manager', true));
+        /*
             Try to get the controller up and running.
         */
         try
@@ -184,7 +188,7 @@ class Logicoder extends Logicoder_ObjectRegistry implements Logicoder_iSingleton
             /*
                 We should have a valid controller, now.
             */
-            $this->register('controller', new $this->router->classname($this));
+            $this->register('controller', new $this->router->classname());
             /*
                 And finally, let's get some action.
             */
