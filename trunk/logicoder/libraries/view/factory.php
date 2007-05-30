@@ -44,22 +44,22 @@ class Logicoder_View_Factory implements Logicoder_iFactory
         /*
             Start the search with project views.
         */
-        if (is_dir(PROJECT_ROOT . 'views/') and
-            $mFound = self::_map(PROJECT_ROOT . 'views/' . $oApp->name . $sViewSrc))
+        if (is_dir(APPS_ROOT . 'views/') and
+            $mFound = self::_map(APPS_ROOT . 'views/' . $oApp->name . $sViewSrc))
         {
             return $mFound;
         }
         /*
             Search for application views.
         */
-        if ($mFound = self::_map(PROJECT_ROOT . $oApp->path . 'views/' . $sViewSrc))
+        if ($mFound = self::_map(APPS_ROOT . $oApp->path . 'views/' . $sViewSrc))
         {
             return $mFound;
         }
         /*
             At last, try with a 'views.php' in the application directory.
         */
-        if (is_readable(PROJECT_ROOT . $oApp->path . 'views' . EXT))
+        if (is_readable(APPS_ROOT . $oApp->path . 'views' . EXT))
         {
             /*
                 Load the application views class definition.

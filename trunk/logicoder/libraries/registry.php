@@ -82,18 +82,18 @@ class Logicoder_Registry extends Logicoder_OverArray implements Logicoder_iRegis
 class Logicoder_ObjectRegistry extends Logicoder_Registry
 {
     /**
-     * Save in the register the object $oObject as $sKey.
+     * Overload magic property setter method.
      *
-     * @param   string  $sKey   The name/key string
-     * @param   object  $mValue The object
+     * @param   string  $sKey       The name/key string
+     * @param   mixed   $oObject    The object to save
      *
-     * @return  mixed   The object
+     * @return  mixed   The key value
      */
-    public function register ( $sKey, $oObject )
+    protected function __set ( $sKey, $oObject )
     {
         if (is_object($oObject))
         {
-            return $this->__set($sKey, $oObject);
+            return $this->aData[$sKey] = $oObject;
         }
         else
         {

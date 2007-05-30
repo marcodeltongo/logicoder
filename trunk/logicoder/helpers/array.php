@@ -158,4 +158,70 @@ function array_levels ( array $aArray, $iLevel = 0 )
 	}
 	return max($aLevels);
 }
-// END is_array_array function
+// END array_levels function
+
+// -----------------------------------------------------------------------------
+
+/**
+ * @ignore
+ */
+function __array_trim_callback ( &$v, $k, $aParams )
+{
+    if (is_null($aParams[1]))
+    {
+        $v = $aParams[0]($v);
+    }
+    else
+    {
+        $v = $aParams[0]($v, $aParams[1]);
+    }
+}
+
+/**
+ * Trims each array element.
+ *
+ * @param   array   $aArray     Array to trim
+ * @param   string  $sChars     Characters to trim
+ *
+ * @return	array	Trimmed array
+ */
+function array_trim ( array $aArray, $sChars = null )
+{
+    array_walk($aArray, '__array_trim_callback', array('trim', $sChars));
+	return $aArray;
+}
+// END array_trim function
+
+// -----------------------------------------------------------------------------
+
+/**
+ * Right-trims each array element.
+ *
+ * @param   array   $aArray     Array to trim
+ * @param   string  $sChars     Characters to trim
+ *
+ * @return	array	Trimmed array
+ */
+function array_rtrim ( array $aArray, $sChars = null )
+{
+    array_walk($aArray, '__array_trim_callback', array('rtrim', $sChars));
+	return $aArray;
+}
+// END array_rtrim function
+
+// -----------------------------------------------------------------------------
+
+/**
+ * Left-trims each array element.
+ *
+ * @param   array   $aArray     Array to trim
+ * @param   string  $sChars     Characters to trim
+ *
+ * @return	array	Trimmed array
+ */
+function array_ltrim ( array $aArray, $sChars = null )
+{
+    array_walk($aArray, '__array_trim_callback', array('ltrim', $sChars));
+	return $aArray;
+}
+// END array_ltrim function

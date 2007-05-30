@@ -30,12 +30,12 @@ class Logicoder_DB_PDO_SQLite_DataDict extends Logicoder_DB_PDO_DataDict
     public $aDBAttrs    = array (   'NULL'              => ' NULL',
                                     '!NULL'             => ' NOT NULL',
                                     'DEFAULT'           => ' DEFAULT ',
-                                    'AUTOINC'           => '');
+                                    'AUTOINC'           => ' PRIMARY KEY AUTOINCREMENT');
 
     /**
      * DB index types.
      */
-    public $aDBIndex    = array (   'PRIMARY'           => 'PRIMARY KEY (`%s`)');
+    public $aDBIndex    = array ();
 
     // -------------------------------------------------------------------------
     //  Overloaded methods.

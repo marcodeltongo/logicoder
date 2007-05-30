@@ -134,7 +134,7 @@ abstract class Logicoder_Model_Field_Abstract
             /*
                 Set only if defined.
             */
-			if (in_array($k, $aVars)) # Should use (array)$this ?
+			if (in_array($k, $aVars))
 			{
 				$this->$k = $v;
 			}

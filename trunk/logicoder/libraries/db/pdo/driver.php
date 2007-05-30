@@ -47,7 +47,7 @@ class Logicoder_DB_PDO_Driver extends Logicoder_DB_Driver
      */
     public function quote ( $mVal )
     {
-        return (is_string($mVal)) ? PDO::quote($mVal) : $mVal;
+        return (is_string($mVal)) ? $this->oDB->quote($mVal) : $mVal;
     }
 
     // -------------------------------------------------------------------------

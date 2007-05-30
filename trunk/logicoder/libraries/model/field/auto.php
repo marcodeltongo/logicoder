@@ -21,7 +21,7 @@
  * @link        http://www.logicoder.com/documentation/models.html
  * @author      Marco Del Tongo <info@marcodeltongo.com>
  */
-class Logicoder_Model_Field_Auto extends Logicoder_Model_Field_Unsigned
+class Logicoder_Model_Field_Auto extends Logicoder_Model_Field_Integer
 {
     /**
      * Override default constructor.

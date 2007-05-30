@@ -27,9 +27,9 @@ class Logicoder_DB_PDO_MySQL_DataDict extends Logicoder_DB_PDO_DataDict
     /**
      * Create a table.
      */
-    public function create_table ( $sTableName, array $aFields = null )
+    public function create_table ( $sTableName, array $aFields = null, $bIfNotExists = false, $bDrop = false )
     {
         $_charset = (defined('DB_CHARSET')) ? DB_CHARSET : 'utf8';
-        return parent::create_table($sTableName, $aFields) . ' ENGINE=InnoDB DEFAULT CHARSET=' . $_charset .';';
+        return  parent::create_table($sTableName, $aFields, $bIfNotExists, $bDrop) . ' ENGINE=InnoDB DEFAULT CHARSET=' . $_charset;
     }
 }

@@ -18,7 +18,7 @@
  * @link        http://www.logicoder.com/documentation/overarray.html
  * @author      Marco Del Tongo <info@marcodeltongo.com>
  */
-class Logicoder_OverArray implements ArrayAccess
+class Logicoder_OverArray implements ArrayAccess, IteratorAggregate
 {
     /**
      * Internal data stack.
@@ -130,6 +130,16 @@ class Logicoder_OverArray implements ArrayAccess
     public function offsetExists ( $sKey )
     {
         return $this->__isset($sKey);
+    }
+
+    /**
+     * Implements IteratorAggregate getIterator method.
+     *
+     * @return  object  This function will return an iterator
+     */
+    public function getIterator ( /* void */ )
+    {
+        return new ArrayIterator($this->aData);
     }
 
     /**

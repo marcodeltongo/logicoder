@@ -259,6 +259,25 @@ abstract class Logicoder_DB_Driver
         return ($this->query($mSQL, $aData) !== false);
     }
 
+    /**
+     * Execute multiple queries without results.
+     *
+     * @param   array   $aSQL       Array of SQL query string or object to run
+     * @param   array   $aData      Array of arrays of data for bound vars
+     *
+     * @return  array   True on success or false on failure for each key
+     */
+    public function multi_execute ( array $aSQL, array $aData = null )
+    {
+        $aRet = array();
+        foreach ($aSQL as $k => $sql)
+        {
+            $data = (isset($aData[$k])) ? $aData[$k] : null;
+            $aRet[$k] = ($this->query($sql, $data) !== false);
+        }
+        return $aRet;
+    }
+
     // -------------------------------------------------------------------------
     //  Abstract methods.
     // -------------------------------------------------------------------------

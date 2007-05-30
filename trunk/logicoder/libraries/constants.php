@@ -112,3 +112,60 @@ define('DB_FETCH_ASSOC',    1);
 define('DB_FETCH_NUM',      2);
 define('DB_FETCH_OBJ',      3);
 /**#@-*/
+
+// ------------------------------------------------------------------------------
+/*
+    Logicoder_Model_* constants
+*/
+
+/**
+ * Define fields class prefix.
+ */
+if (!defined('MODEL_FIELD_PREFIX'))
+{
+    define('MODEL_FIELD_PREFIX', 'Logicoder_Model_Field_');
+}
+/**
+ * Define fields class suffix.
+ */
+if (!defined('MODEL_FIELD_SUFFIX'))
+{
+    define('MODEL_FIELD_SUFFIX', '');
+}
+
+/**
+ * Define relations class prefix.
+ */
+if (!defined('MODEL_RELATION_PREFIX'))
+{
+    define('MODEL_RELATION_PREFIX', 'Logicoder_Model_Relation_');
+}
+/**
+ * Define relations class suffix.
+ */
+if (!defined('MODEL_RELATION_SUFFIX'))
+{
+    define('MODEL_RELATION_SUFFIX', '');
+}
+
+/**
+ * Define one to one relations class.
+ */
+if (!defined('MODEL_RELATION_ONETOONE'))
+{
+    define('MODEL_RELATION_ONETOONE', MODEL_RELATION_PREFIX . 'OneToOne' . MODEL_RELATION_SUFFIX);
+}
+/**
+ * Define many to one relations class.
+ */
+if (!defined('MODEL_RELATION_MANYTOONE'))
+{
+    define('MODEL_RELATION_MANYTOONE', MODEL_RELATION_PREFIX . 'ManyToOne' . MODEL_RELATION_SUFFIX);
+}
+/**
+ * Define many to many relations class.
+ */
+if (!defined('MODEL_RELATION_MANYTOMANY'))
+{
+    define('MODEL_RELATION_MANYTOMANY', MODEL_RELATION_PREFIX . 'ManyToMany' . MODEL_RELATION_SUFFIX);
+}
