@@ -158,5 +158,29 @@ abstract class Logicoder_Model_Field_Abstract
             $this->primary_key = true;
         }
     }
+
+    /**
+     *  Validates a value for this field.
+     *
+     *  @param  mixed   $mValue     Value to validate
+     *
+     *  @return boolean True if valid, false otherwise
+     */
+    public function validate ( $mValue )
+    {
+        return true;
+    }
+
+    /**
+     *  Sanitizes a value for this field.
+     *
+     *  @param  mixed   $mValue     Value to sanitize
+     *
+     *  @return mixed   Sanitized value
+     */
+    public function sanitize ( $mValue )
+    {
+        return $mValue;
+    }
 }
 // END Logicoder_Model_Field_Abstract class
