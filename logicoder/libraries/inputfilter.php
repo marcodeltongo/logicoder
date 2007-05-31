@@ -25,6 +25,8 @@ class Logicoder_InputFilter extends Logicoder_OverArray
      */
     protected $aSource;
 
+    // -------------------------------------------------------------------------
+
     /**
      * Constructor.
      *
@@ -55,10 +57,14 @@ class Logicoder_InputFilter extends Logicoder_OverArray
         {
             foreach ($this->aSource as $sKey => $mValue)
             {
-                $this->aData[$sKey] = sanitize($this->aSource[$sKey]);
+                $this->aData[$sKey] = xss_filter($this->aSource[$sKey]);
             }
         }
     }
+
+    // -------------------------------------------------------------------------
+    //  Property getters and setters.
+    // -------------------------------------------------------------------------
 
     /**
      * Overload magic property setter function.
@@ -91,7 +97,7 @@ class Logicoder_InputFilter extends Logicoder_OverArray
         if (!isset($this->aData[$sKey]))
         {
             $this->aData[$sKey] = (REQUEST_XSS_FILTERING) ?
-                                    sanitize($this->aSource[$sKey]) :
+                                    xss_filter($this->aSource[$sKey]) :
                                     $this->aSource[$sKey];
         }
         return $this->aData[$sKey];
