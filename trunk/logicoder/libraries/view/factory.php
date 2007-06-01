@@ -23,92 +23,101 @@ class Logicoder_View_Factory implements Logicoder_iFactory
     /**
      * Returns a new instance of a View class.
      *
-     * @param   string  $sViewSrc   The view name / query / source
+     * @param   string  $sViewSrc   The view name / query / method / source
      * @param   numeric $nType      The view type
+     * @param   string  $sAppDir    The application sub-directory
+     * @param   string  $sAppName   The application name
      *
      * @return  object  Returns a view instance or throws a 404 exception
      */
-    public static function instance ( $sViewSrc = null, $nType = null )
+    public static function instance ( $sViewSrc = '?', $nType = null, $sAppDir = APP_PATH, $sAppName = APP_NAME )
     {
         /*
             If a specific type is requested, simply try to load it.
         */
         if (!is_null($nType))
         {
-            return self::_load($nType, $sViewSrc);
+            return self::load($nType, $sViewSrc, $sAppDir, $sAppName);
         }
         /*
-            Alias to main app.
+            Start the search with project overloaded views.
         */
-        $oApp = Logicoder::instance()->app;
-        /*
-            Start the search with project views.
-        */
-        if (is_dir(APPS_ROOT . 'views/') and
-            $mFound = self::_map(APPS_ROOT . 'views/' . $oApp->name . $sViewSrc))
+        $sSearch = APPS_ROOT . 'views/' . $sAppDir;
+        if (is_dir($sSearch) and $mFound = self::map($sSearch . $sViewSrc))
         {
             return $mFound;
         }
         /*
-            Search for application views.
+            Search for standard application views.
         */
-        if ($mFound = self::_map(APPS_ROOT . $oApp->path . 'views/' . $sViewSrc))
+        if ($mFound = self::map(APPS_ROOT . $sAppDir . 'views/' . $sViewSrc))
         {
             return $mFound;
         }
         /*
             At last, try with a 'views.php' in the application directory.
         */
-        if (is_readable(APPS_ROOT . $oApp->path . 'views' . EXT))
+        if (is_readable(APPS_ROOT . $sAppDir . 'views' . EXT))
         {
-            /*
-                Load the application views class definition.
-            */
-            $sClass = $oApp->name . '_Views';
-            Logicoder()->load->__load($sClass, $oApp->path, 'views', $sClass, true);
-            /*
-                If we found a suitable view, return a new instance of it.
-            */
-            if (method_exists($sClass, $sViewSrc))
-            {
-                /*
-                    Get a new instance, set method and return it.
-                */
-                $oView = new $sClass();
-                return $oView->method($sViewSrc);
-            }
+            return self::load(PROXY_VIEW, $sViewSrc, $sAppDir, $sAppName);
         }
         /*
             Whoops !
         */
-        throw new Logicoder_404('View not found.');
+        throw new Logicoder_404("View '$sViewSrc' for '$sAppName' application not found.");
     }
 
     /**
      * Load and instantiate a view.
      *
      * @param   numeric $nType      The view type
-     * @param   string  $sViewSrc   The view name / query / source
+     * @param   string  $sViewSrc   The view pathname / query / source
+     * @param   string  $sAppDir    The application sub-directory
+     * @param   string  $sAppName   The application name
      *
      * @return  object  Returns a view instance or throws a 404 exception
      */
-    protected static function _load ( $nType, $sViewSrc )
+    protected static function load ( $nType, $sViewSrc, $sAppDir = APP_PATH, $sAppName = APP_NAME )
     {
         /*
-            Parser to use.
+            Proxy views.
         */
-        $sEngine = '';
-        if ($nType & VIEW_IS_HTML)
+        if ($nType & VIEW_IS_CLASS)
         {
-            $sEngine = 'HTML';
+            $sClass = $sAppName . '_Views';
+            /*
+                Load the application views class definition.
+            */
+            if (!class_exists($sClass, false))
+            {
+                ob_start();
+                include(APPS_ROOT . $sAppDir . 'views' . EXT);
+                ob_end_clean();
+            }
+            $oView = new $sClass();
+            /*
+                Set method to call and return instance.
+            */
+            return $oView->method($sViewSrc);
         }
-        elseif ($nType & VIEW_IS_PHP)
+        /*
+            Standard views.
+        */
+        if ($nType & VIEW_IS_PHP)
         {
-            $sEngine = 'PHP';
+            $sClass = 'View_PHP';
+        }
+        elseif ($nType & VIEW_IS_HTML)
+        {
+            $sClass = 'View_HTML';
         }
         elseif ($nType & VIEW_IS_TEMPLATE)
         {
-            $sEngine = 'Template';
+            $sClass = 'View_Template';
+        }
+        elseif ($nType & VIEW_IS_DWT)
+        {
+            $sClass = 'View_DWT';
         }
         else
         {
@@ -116,10 +125,6 @@ class Logicoder_View_Factory implements Logicoder_iFactory
         }
         /*
             Load the view implementation.
-        */
-        $sClass = Logicoder()->load->__load('View_' . $sEngine, 'libraries/');
-        /*
-            Get a new instance.
         */
         $oView = new $sClass();
         /*
@@ -164,28 +169,28 @@ class Logicoder_View_Factory implements Logicoder_iFactory
      *
      * @return  mixed   A view instance or boolean false
      */
-    protected static function _map ( $sViewSrc )
+    protected static function map ( $sViewSrc )
     {
         /*
             There is a flat html view file ?
         */
         if ($mFound = glob($sViewSrc . HTML_VIEW_MASK, GLOB_BRACE))
         {
-            return self::_load(HTML_VIEW, $mFound[0]);
+            return self::load(HTML_VIEW, $mFound[0]);
         }
         /*
             There is a php view file ?
         */
         if ($mFound = glob($sViewSrc . PHP_VIEW_MASK, GLOB_BRACE))
         {
-            return self::_load(PHP_VIEW, $mFound[0]);
+            return self::load(PHP_VIEW, $mFound[0]);
         }
         /*
             There is a templated view file ?
         */
         if ($mFound = glob($sViewSrc . TEMPLATE_VIEW_MASK, GLOB_BRACE))
         {
-            return self::_load(TEMPLATE_VIEW, $mFound[0]);
+            return self::load(TEMPLATE_VIEW, $mFound[0]);
         }
         /*
             None found.

@@ -444,7 +444,7 @@ class Logicoder_Router
                 /*
                     Save in application object.
                 */
-                Logicoder::instance()->app->name = $this->aSegments[0];
+                Logicoder::instance()->app->name = ucfirst($this->aSegments[0]);
                 Logicoder::instance()->app->path = $sAppPath . '/';
             }
         }

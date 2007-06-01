@@ -63,8 +63,9 @@ define('VIEW_FROM_PARAM',   4);
 /**#@+
  * View source markup language.
  */
-define('VIEW_IS_HTML',      32);
-define('VIEW_IS_PHP',       64);
+define('VIEW_IS_PHP',       16);
+define('VIEW_IS_CLASS',     32);
+define('VIEW_IS_HTML',      64);
 define('VIEW_IS_TEMPLATE',  128);
 define('VIEW_IS_DWT',       256);
 /**#@-*/
@@ -72,8 +73,9 @@ define('VIEW_IS_DWT',       256);
 /**#@+
  * View types. (BIT-FIELDS)
  */
-define('HTML_VIEW',         VIEW_FROM_FILE | VIEW_IS_HTML);
 define('PHP_VIEW',          VIEW_FROM_FILE | VIEW_IS_PHP);
+define('PROXY_VIEW',        VIEW_FROM_FILE | VIEW_IS_CLASS);
+define('HTML_VIEW',         VIEW_FROM_FILE | VIEW_IS_HTML);
 define('TEMPLATE_VIEW',     VIEW_FROM_FILE | VIEW_IS_TEMPLATE);
 define('DWT_VIEW',          VIEW_FROM_FILE | VIEW_IS_DWT);
 /**#@-*/
@@ -81,10 +83,10 @@ define('DWT_VIEW',          VIEW_FROM_FILE | VIEW_IS_DWT);
 /**#@+
  * View type extensions.
  */
-define('HTML_VIEW_MASK', '{.html, .htm, .xhtml}');
-define('PHP_VIEW_MASK',  '{.php, .php5, .inc}');
-define('TEMPLATE_VIEW_MASK',  '{.thmtl, .tpl, .tmpl, .tml}');
-define('DWT_VIEW_MASK',  '{.dwt}');
+define('HTML_VIEW_MASK',        '{.html, .htm, .xhtml}');
+define('PHP_VIEW_MASK',         '{.php, .php5, .inc}');
+define('TEMPLATE_VIEW_MASK',    '{.thmtl, .tpl, .tmpl, .tml}');
+define('DWT_VIEW_MASK',         '{.dwt}');
 /**#@-*/
 
 // -----------------------------------------------------------------------------

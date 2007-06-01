@@ -41,33 +41,9 @@ abstract class Logicoder_View_Abstract extends Logicoder_OverArray
     protected $sDBQuery;
 
     /**
-     * Method to proxy for class views.
-     */
-    protected $sMethod;
-
-    /**
      * Constructor.
-     *
-     * @param   string  $sSource    The view source
-     * @param   array   $aData      Data for the view
      */
-    public function __construct ( $sSource = null, array $aData = null )
-    {
-        if (!is_null($sSource))
-        {
-            /*
-                Save passed source.
-            */
-            $this->source($sSource);
-        }
-        if (!is_null($aData))
-        {
-            /*
-                Save data.
-            */
-            $this->data($aData);
-        }
-    }
+    public function __construct ( /* void */ ) { /* void */ }
 
     /**
      * Set/get view source as string.
@@ -107,9 +83,13 @@ abstract class Logicoder_View_Abstract extends Logicoder_OverArray
         if (!is_null($aData))
         {
             /*
-                Save passed data.
+                Save passed data overwriting anything was there before.
             */
-            return $this->set($aData);
+            $this->aData = $aData;
+            /*
+                Return myself for method chaining.
+            */
+            return $this;
         }
         /*
             Return data if called with null parameter.
@@ -172,32 +152,6 @@ abstract class Logicoder_View_Abstract extends Logicoder_OverArray
             Return SQL query if called with null parameter.
         */
         return $this->sDBQuery;
-    }
-
-    /**
-     * Set/get view class method.
-     *
-     * @param   string  $sMethod    The method to call or null to get it
-     *
-     * @return  mixed   Method name if null passed or itself for chaining
-     */
-    public function method ( $sMethod = null )
-    {
-        if (!is_null($sMethod))
-        {
-            /*
-                Save passed method.
-            */
-            $this->sMethod = $sMethod;
-            /*
-                Return myself for method chaining.
-            */
-            return $this;
-        }
-        /*
-            Return method if called with null parameter.
-        */
-        return $this->sMethod;
     }
 
     /**
@@ -288,25 +242,18 @@ abstract class Logicoder_View_Abstract extends Logicoder_OverArray
      *
      * @param   array   $aData      Data for the view
      *
-     * @return  object  Itself for chaining
+     * @return  boolean True for success or false on failure.
      */
     public function parse ( array $aData = null )
     {
         if (!is_null($aData))
         {
-            /*
-                Save data.
-            */
-            return $this->data($aData);
+            $this->set($aData);
         }
         /*
             Call real engine.
         */
-        $this->_parse();
-        /*
-            Return for chaining.
-        */
-        return $this;
+        return $this->_parse();
     }
 
     /**
@@ -317,23 +264,12 @@ abstract class Logicoder_View_Abstract extends Logicoder_OverArray
      *
      * @return  mixed   True for success or output if requested
      */
-    public function render ( array $aData, $bOutput = true )
+    public function render ( array $aData = null, $bOutput = true )
     {
-        if (!is_null($aData))
-        {
-            /*
-                Save data.
-            */
-            return $this->data($aData);
-        }
-        /*
-            Call parser.
-        */
-        $this->parse($aData);
         /*
             Check we have parsed.
         */
-        if (is_null($this->sParsed))
+        if (!$this->parse($aData))
         {
             throw new Logicoder_404('Unable to parse view.');
         }
