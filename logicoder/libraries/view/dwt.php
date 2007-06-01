@@ -30,6 +30,7 @@ class Logicoder_View_DWT extends Logicoder_View_Abstract
             TO DO !
         */
         $this->sParsed = ob_get_clean();
+        return false;
     }
 }
 // END Logicoder_View_DWT class

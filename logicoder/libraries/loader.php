@@ -268,18 +268,26 @@ class Logicoder_Loader
     /**
      * Load views.
      *
-     * @param   string  $sName      View name
+     * @param   string  $sName      View name or null to auto-populate
      * @param   array   $aData      Data to populate view
      * @param   integer $nType      Override view detection algorithm
      *
      * @return  object  Loaded class instance
      */
-    public function view ( $sName, array $aData = null, $nType = null )
+    public function view ( $sName = null, array $aData = null, $nType = null )
     {
         /*
             Load the View Factory.
         */
         $sFactory = $this->library('View_Factory');
+        /*
+            Automate view name.
+        */
+        if (is_null($sName))
+        {
+            $aBT = debug_backtrace();
+            $sName = $aBT[1]['function'];
+        }
         /*
             Call the factory for an instance.
         */

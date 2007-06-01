@@ -29,8 +29,9 @@ class Logicoder_View_HTML extends Logicoder_View_Abstract
             Include the HTML view file.
         */
         ob_start();
-        include $this->sFilename;
+        $bOK = include $this->sFilename;
         $this->sParsed = ob_get_clean();
+        return $bOK;
     }
 }
 // END Logicoder_View_HTML class
