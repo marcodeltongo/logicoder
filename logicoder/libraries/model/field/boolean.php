@@ -49,5 +49,17 @@ class Logicoder_Model_Field_Boolean extends Logicoder_Model_Field_Abstract
         */
         parent::__construct($sField, $aOptions);
     }
+
+    /**
+     *  Sanitizes a value for this field.
+     *
+     *  @param  mixed   $mValue     Value to sanitize
+     *
+     *  @return boolean Sanitized value
+     */
+    public function sanitize ( $mValue )
+    {
+        return sanitize_boolean($mValue);
+    }
 }
 // END Logicoder_Model_Field_Boolean class

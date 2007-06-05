@@ -148,11 +148,11 @@ class Logicoder extends Logicoder_ObjectRegistry implements Logicoder_iSingleton
         /*
             Setup request object.
         */
-        $this->register('request', $this->load->library('Request', true));
+        $this->register('request', $this->load->library('HttpRequest', true));
         /*
             Setup response object.
         */
-        $this->register('response', $this->load->library('Response', true));
+        $this->register('response', $this->load->library('HttpResponse', true));
         /*
             Setup application object.
         */

@@ -37,5 +37,17 @@ class Logicoder_Model_Field_Date extends Logicoder_Model_Field_Abstract
      * Automatically set the field to now when the object is first created.
      */
     public $auto_now_add   = false;
+
+    /**
+     *  Sanitizes a value for this field.
+     *
+     *  @param  mixed   $mValue     Value to sanitize
+     *
+     *  @return string  Sanitized value
+     */
+    public function sanitize ( $mValue )
+    {
+        return sanitize_isodate($mValue);
+    }
 }
 // END Logicoder_Model_Field_Date class

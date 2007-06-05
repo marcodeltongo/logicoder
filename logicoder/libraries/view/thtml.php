@@ -30,7 +30,7 @@ class Logicoder_View_Template extends Logicoder_View_Abstract
             TO DO !
         */
         $this->sParsed = ob_get_clean();
-        return true;
+        return false;
     }
 }
 // END Logicoder_View_Template class

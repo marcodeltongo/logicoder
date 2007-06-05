@@ -21,6 +21,24 @@
 abstract class Logicoder_Cache_Abstract
 {
     /**
+     * Default TTL.
+     */
+    protected $iTTL;
+
+    /**
+     * Constructor.
+     *
+     * @param   integer $iTTL       Default TTL for cached data.
+     */
+    public function __construct ( $iTTL = 0 )
+    {
+        /*
+            Save default TTL.
+        */
+        $this->iTTL = $iTTL;
+    }
+
+    /**
      * Cache a variable in the data store (only if it's not stored).
      *
      * @param   string  $sKey       The name/key string
@@ -29,7 +47,7 @@ abstract class Logicoder_Cache_Abstract
      *
      * @return  boolean TRUE on success or FALSE on failure.
      */
-    abstract public function add ( $sKey, $mValue, $iTTL = 0 );
+    abstract public function add ( $sKey, $mValue, $iTTL = null );
 
     /**
      * Cache a variable in the data store.
@@ -40,7 +58,7 @@ abstract class Logicoder_Cache_Abstract
      *
      * @return  boolean TRUE on success or FALSE on failure.
      */
-    abstract public function set ( $sKey, $mValue, $iTTL = 0 );
+    abstract public function set ( $sKey, $mValue, $iTTL = null );
 
     /**
      * Fetch a stored variable from the cache.

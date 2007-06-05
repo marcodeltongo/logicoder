@@ -40,5 +40,17 @@ class Logicoder_Model_Field_IPAddress extends Logicoder_Model_Field_Char
         */
         parent::__construct($sField, $aOptions);
     }
+
+    /**
+     *  Sanitizes a value for this field.
+     *
+     *  @param  mixed   $mValue     Value to sanitize
+     *
+     *  @return string  Sanitized value
+     */
+    public function sanitize ( $mValue )
+    {
+        return sanitize_ipv4($mValue);
+    }
 }
 // END Logicoder_Model_Field_IPAddress class

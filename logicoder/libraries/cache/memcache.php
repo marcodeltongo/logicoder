@@ -26,19 +26,33 @@ class Logicoder_Cache_Memcache extends Logicoder_Cache_Abstract
     protected $oMemcache;
 
     /**
+     * Compress data.
+     */
+    protected $bCompress = false;
+
+    /**
      * Constructor.
      *
-     * @param   array   $aOptions   Configuration options
+     * @param   integer $iTTL       Default TTL for cached data.
+     * @param   array   $aOptions   Optional configuration options
      */
-    public function __construct ( array $aOptions = null )
+    public function __construct ( $iTTL = 0, array $aOptions = null )
     {
+        parent::__construct($iTTL);
+        /*
+            Create MemCache instance.
+        */
+        $this->oMemcache = new MemCache();
+        /*
+            Save options.
+        */
         if (!is_null($aOptions) and is_assoc($aOptions))
         {
-            /*
-                Save options.
-            */
+            if (isset($aOptions['host']) and isset($aOptions['port']))
+            {
+                $this->connect($aOptions['host'], $aOptions['port']);
+            }
         }
-        $this->oMemcache = new MemCache();
     }
 
     /**
@@ -63,9 +77,9 @@ class Logicoder_Cache_Memcache extends Logicoder_Cache_Abstract
      *
      * @return  boolean TRUE on success or FALSE on failure.
      */
-    public function add ( $sKey, $mValue, $iTTL = 0 )
+    public function add ( $sKey, $mValue, $iTTL = null )
     {
-        return $this->oMemcache->add($sKey, $mValue, false, $iTTL);
+        return $this->oMemcache->add($sKey, $mValue, false, (isnull($iTTL) ? $this->iTTL : $iTTL));
     }
 
     /**
@@ -77,9 +91,9 @@ class Logicoder_Cache_Memcache extends Logicoder_Cache_Abstract
      *
      * @return  boolean TRUE on success or FALSE on failure.
      */
-    public function set ( $sKey, $mValue, $iTTL = 0 )
+    public function set ( $sKey, $mValue, $iTTL = null )
     {
-        return $this->oMemcache->set($sKey, $mValue, false, $iTTL);
+        return $this->oMemcache->set($sKey, $mValue, false, (isnull($iTTL) ? $this->iTTL : $iTTL));
     }
 
     /**

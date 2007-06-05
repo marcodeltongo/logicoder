@@ -21,21 +21,6 @@
 class Logicoder_Cache_APC extends Logicoder_Cache_Abstract
 {
     /**
-     * Constructor.
-     *
-     * @param   array   $aOptions   Configuration options
-     */
-    public function __construct ( array $aOptions = null )
-    {
-        if (!is_null($aOptions) and is_assoc($aOptions))
-        {
-            /*
-                Save options.
-            */
-        }
-    }
-
-    /**
      * Cache a variable in the data store (only if it's not stored).
      *
      * @param   string  $sKey       The name/key string
@@ -44,9 +29,9 @@ class Logicoder_Cache_APC extends Logicoder_Cache_Abstract
      *
      * @return  boolean TRUE on success or FALSE on failure.
      */
-    public function add ( $sKey, $mValue, $iTTL = 0 )
+    public function add ( $sKey, $mValue, $iTTL = null )
     {
-        return apc_add($sKey, $mValue, $iTTL);
+        return apc_add($sKey, $mValue, (isnull($iTTL) ? $this->iTTL : $iTTL));
     }
 
     /**
@@ -58,9 +43,9 @@ class Logicoder_Cache_APC extends Logicoder_Cache_Abstract
      *
      * @return  boolean TRUE on success or FALSE on failure.
      */
-    public function set ( $sKey, $mValue, $iTTL = 0 )
+    public function set ( $sKey, $mValue, $iTTL = null )
     {
-        return apc_store($sKey, $mValue, $iTTL);
+        return apc_store($sKey, $mValue, (isnull($iTTL) ? $this->iTTL : $iTTL));
     }
 
     /**

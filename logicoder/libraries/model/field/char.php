@@ -59,5 +59,17 @@ class Logicoder_Model_Field_Char extends Logicoder_Model_Field_Abstract
         */
         parent::__construct($sField, $aOptions);
     }
+
+    /**
+     *  Sanitizes a value for this field.
+     *
+     *  @param  mixed   $mValue     Value to sanitize
+     *
+     *  @return string  Sanitized value
+     */
+    public function sanitize ( $mValue )
+    {
+        return strval($mValue);
+    }
 }
 // END Logicoder_Model_Field_Char class

@@ -51,6 +51,11 @@ class Logicoder_Model implements ArrayAccess, Iterator
     protected $__fields                 = array();
 
     /**
+     * Contains this model fields with db_column as keys.
+     */
+    protected $__columns                = array();
+
+    /**
      * The filters data array.
      */
 	protected $__filters_data           = array();
@@ -155,7 +160,7 @@ class Logicoder_Model implements ArrayAccess, Iterator
 		*/
 		if ($this->__db_table === false)
 		{
-            $db_table = (defined('APP_NAME')) ? APP_NAME . '_' : '';
+            $db_table = (defined('APP_NAME')) ? strtolower(APP_NAME) . '_' : '';
             $db_table .= strtolower(substr(get_class($this), 0, -6));
             $this->__db_table = str_plural($db_table);
 		}
@@ -221,9 +226,10 @@ class Logicoder_Model implements ArrayAccess, Iterator
             $this->__pk_field = 'id';
             $this->__pk = 'id';
             /*
-                Move to the top of the fields array.
+                Move to the top of fields and columns.
             */
-            $this->__fields = array_merge(array('id' => $oField), $this->__fields);
+            $this->__fields = array_merge(array('id' => &$oField), $this->__fields);
+            $this->__columns = array_merge(array('id' => &$oField), $this->__columns);
 		}
 		/*
             Prepare an empty queryset.
@@ -269,18 +275,20 @@ class Logicoder_Model implements ArrayAccess, Iterator
         if ($oField->primary_key)
         {
             /*
-                Save as such and move to the top of the fields array.
+                Save as such and move to the top of fields and columns.
             */
             $this->__pk_field = $sField;
             $this->__pk = $oField->db_column;
-            $this->__fields = array_merge(array($sField => $oField), $this->__fields);
+            $this->__fields = array_merge(array($this->__pk_field => &$oField), $this->__fields);
+            $this->__columns = array_merge(array($this->__pk => &$oField), $this->__columns);
         }
         else
         {
             /*
-                Save in fields array.
+                Save in fields and columns.
             */
-            $this->__fields[$sField] = $oField;
+            $this->__fields[$sField] = &$oField;
+            $this->__columns[$oField->db_column] = &$oField;
         }
     }
 
@@ -329,7 +337,7 @@ class Logicoder_Model implements ArrayAccess, Iterator
         /*
             Get pointed field reference.
         */
-        $oField = &$oModel->get_field_ref($aOptions['to_field']);
+        $oField =& $oModel->get_field($aOptions['to_field']);
         /*
             Set to_column name.
         */
@@ -400,7 +408,7 @@ class Logicoder_Model implements ArrayAccess, Iterator
                         Note: used a md5 code to limit string length.
                     */
                     $junction = hash('md5', sprintf('%s__%s_|_%s__%s', $this->__db_table, $sField, $oModel->get_db_table(), $aOptions['to_field']));
-                    $aOptions['db_table'] = ((defined('APP_NAME')) ? APP_NAME : '') . '_junction_' . $junction;
+                    $aOptions['db_table'] = ((defined('APP_NAME')) ? strtolower(APP_NAME) : '') . '_junction_' . $junction;
                 }
                 /*
                     Set related name if not passed.
@@ -412,9 +420,17 @@ class Logicoder_Model implements ArrayAccess, Iterator
             break;
         }
         /*
-            Save in fields array.
+            Create instance and save in fields.
         */
-        $this->__fields[$sField] = new $sClass($sField, $aOptions);
+        $newField = new $sClass($sField, $aOptions);
+        $this->__fields[$sField] = &$newField;
+        /*
+            Save also in columns if not a M2M relation.
+        */
+        if ($sClass !== MODEL_RELATION_MANYTOMANY)
+        {
+            $this->__columns[$newField->db_column] = &$newField;
+        }
     }
 
     /**
@@ -490,23 +506,49 @@ class Logicoder_Model implements ArrayAccess, Iterator
      *
      * @return  object  A reference to a model field
      */
-    public function &get_field_ref ( $sField )
+    public function &get_field ( $sField )
     {
         if (!isset($this->__fields[$sField]))
         {
-            throw new Logicoder_Model_Exception("Trying to get unknown field '$sField'.");
+            throw new Logicoder_Model_Exception("Trying to get reference to unknown field '$sField'.");
         }
         return $this->__fields[$sField];
     }
 
     /**
-     * Returns all model fields.
+     * Returns a reference to model fields.
      *
-     * @return  array   All model fields
+     * @return  array   Model fields reference
      */
-    public function get_fields ( /* void */ )
+    public function &get_fields ( /* void */ )
     {
         return $this->__fields;
+    }
+
+    /**
+     * Returns a reference to a model column.
+     *
+     * @param   string  $sColumn    The column key
+     *
+     * @return  object  A reference to a model column
+     */
+    public function &get_column ( $sColumn )
+    {
+        if (!isset($this->__columns[$sColumn]))
+        {
+            throw new Logicoder_Model_Exception("Trying to get reference to unknown column '$sColumn'.");
+        }
+        return $this->__columns[$sColumn];
+    }
+
+    /**
+     * Returns a reference to model columns.
+     *
+     * @return  array   Model columns reference
+     */
+    public function &get_columns ( /* void */ )
+    {
+        return $this->__columns;
     }
 
     // -------------------------------------------------------------------------
@@ -538,11 +580,16 @@ class Logicoder_Model implements ArrayAccess, Iterator
             $sKey = $this->__fields[$sKey]->db_column;
         }
         /*
-            Set value.
-
-            NOTE: Should we add a check for unknown columns ??
+            Check column exists.
         */
-        return $this->__record[$sKey] = $mValue;
+        if (!isset($this->__columns[$sKey]))
+        {
+            throw new Logicoder_Model_Exception("Trying to set unknown column '$sColumn'.");
+        }
+        /*
+            Set sanitized column value.
+        */
+        return $this->__record[$sKey] = $this->__columns[$sKey]->sanitize($mValue);
     }
 
     /**
@@ -571,11 +618,18 @@ class Logicoder_Model implements ArrayAccess, Iterator
             $sKey = $this->__fields[$sKey]->db_column;
         }
         /*
+            Check column exists.
+        */
+        if (!isset($this->__columns[$sKey]))
+        {
+            throw new Logicoder_Model_Exception("Trying to get unknown column '$sColumn'.");
+        }
+        /*
             Return value from current record or default.
         */
         if (!isset($this->__record[$sKey]))
         {
-            $this->__record[$sKey] = $default;
+            $this->__record[$sKey] = $this->__columns[$sKey]->sanitize($default);
         }
         return $this->__record[$sKey];
     }
@@ -677,9 +731,25 @@ class Logicoder_Model implements ArrayAccess, Iterator
         */
         if (!is_null($this->__query->sql()))
         {
+            /*
+                Prepare and run query.
+            */
             $qs = $this->__query->select()->from($this->__db_table);
             $this->__rs = $this->__db->query($qs, $this->__filters_data);
-            $this->__record = $this->__rs->row();
+            /*
+                Try to get record.
+            */
+            if (($this->__record = $this->__rs->row()) === false)
+            {
+                throw new Logicoder_Model_RecordNotExists_Exception();
+            }
+            /*
+                Sanitize record.
+            */
+            foreach ($this->__record as $k => $v)
+            {
+                $this->__record[$k] = $this->__columns[$k]->sanitize($v);
+            }
         }
         else
         {
@@ -720,9 +790,19 @@ class Logicoder_Model implements ArrayAccess, Iterator
     public function next ( /* void */ )
     {
         /*
-            Get a new row or false.
+            Try to get record.
         */
-        $this->__record = $this->__rs->row();
+        if (($this->__record = $this->__rs->row()) === false)
+        {
+            return false;
+        }
+        /*
+            Sanitize record.
+        */
+        foreach ($this->__record as $k => $v)
+        {
+            $this->__record[$k] = $this->__columns[$k]->sanitize($v);
+        }
     }
 
     /**
@@ -845,7 +925,7 @@ class Logicoder_Model implements ArrayAccess, Iterator
                 {
                     /*
                         It's a column of another table. Mhmm... do nothing for now.
-    
+
                         This probably should be translated as a Model not a table.
                     */
                 }
@@ -926,16 +1006,30 @@ class Logicoder_Model implements ArrayAccess, Iterator
 	}
 
     /**
-     * Limits the resultset.
+     * Set order for the resultset.
      *
-     * @param   integer $nLimit     Maximum number of records to return
-     * @param   integer $nOffset    Starting record offset (defaults to false)
+     * @param   mixed   $aFields    Array of fields or field name
+     * @param   string  $sMode      'ASC' for ascending | 'DESC' for descending
      *
      * @return  object  Instance for method chaining
      */
-	public function order_by ( $nLimit, $nOffset = false )
+	public function order_by ( $aFields, $sMode = 'ASC' )
 	{
-        $this->__query->limit($nLimit, $nOffset);
+        /*
+            Convert field to db_column.
+        */
+        $aFields = (array)$aFields;
+        foreach ($aFields as $k => $v)
+        {
+            if (isset($this->__fields[$v]))
+            {
+                $aFields[$k] = $this->__fields[$v]->db_column;
+            }
+        }
+        /*
+            Set order_by clause.
+        */
+        $this->__query->order_by($aFields, $sMode);
         /*
             Return for method chaining.
         */
@@ -952,7 +1046,28 @@ class Logicoder_Model implements ArrayAccess, Iterator
         $aRecords = array();
         foreach ($this->__db->get($this->__db_table) as $row)
         {
+            /*
+                TODO: Add select_related() support.
+            */
             $aRecords[$row[$this->__pk]] = $this->__prepare_clone($row);
+        }
+        return $aRecords;
+	}
+
+    /**
+     * Return a raw resultset with all records.
+     *
+     * @return  array   Array of all records in the table
+     */
+	public function all_raw ( /* void */ )
+	{
+        $aRecords = array();
+        foreach ($this->__db->get($this->__db_table) as $row)
+        {
+            /*
+                TODO: Add select_related() support.
+            */
+            $aRecords[$row[$this->__pk]] = $row;
         }
         return $aRecords;
 	}
@@ -1072,26 +1187,26 @@ class Logicoder_Model implements ArrayAccess, Iterator
      */
 	public function get_by_pk ( $mPK )
 	{
-        $that = $this->__prepare_clone();
         /*
             PK sanity check.
         */
         if (is_null($mPK))
         {
-            return $that;
+            return $this;
         }
         /*
-            Check for record.
+            Clone.
         */
-        $qs = $that->__query->count()->from($that->__db_table)->where($that->__pk, ':'.$that->__pk);
-        switch ($that->__db->query_col($qs, array($that->__pk => $mPK)))
+        $that = $this->__prepare_clone();
+        /*
+            Query for record.
+        */
+        $qs = $that->__query->clean()->select()->from($that->__db_table)->where($that->__pk, $mPK);
+        $rs = $that->__db->query($qs);
+        switch ($rs->num_rows())
         {
             case 1:
-                /*
-                    Retrieve by PK.
-                */
-                $qs = $that->__query->clean()->select()->from($that->__db_table)->where($that->__pk, $mPK);
-                $that->__record = $that->__db->query_row($qs);
+                $that->__record = $rs->row();
                 return $that;
             break;
 
@@ -1243,7 +1358,7 @@ class Logicoder_Model implements ArrayAccess, Iterator
 
     /**
      * Build a DDL schema for the model.
-     * 
+     *
      * @param   boolean $bIfNotExists   True to create only if not exists
      * @param   boolean $bDrop          True to drop before creation
      *
@@ -1252,15 +1367,8 @@ class Logicoder_Model implements ArrayAccess, Iterator
     public function get_create_table ( $bIfNotExists = false, $bDrop = false )
     {
         $fields = array();
-        foreach ($this->__fields as $name => $field)
+        foreach ($this->__columns as $name => $field)
         {
-            if (($name != $this->__pk_field) and ($field->db_column == $this->__pk))
-            {
-                /*
-                    Skip M2M fields.
-                */
-                continue;
-            }
             $fields[$name] = object_to_array($field);
         }
         return $this->__db->ddl_builder()->create_table($this->__db_table, $fields, $bIfNotExists, $bDrop);
