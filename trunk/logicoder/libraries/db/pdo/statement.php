@@ -21,6 +21,13 @@
 class Logicoder_DB_PDO_Statement extends Logicoder_DB_Statement
 {
     /**
+     * Local results caching.
+     *
+     * NOTE: This is needed to implement a decent num_rows on select queries.
+     */
+    protected $aResults = null;
+
+    /**
      * Overloaded conversion table.
      */
     protected $aResultModes = array( DB_FETCH_ASSOC  => PDO::FETCH_ASSOC,
@@ -80,6 +87,7 @@ class Logicoder_DB_PDO_Statement extends Logicoder_DB_Statement
     public function execute ( array $aData = null )
     {
         $this->oStmt->closeCursor();
+        $this->aResults = null;
         return $this->oStmt->execute($aData);
     }
 
@@ -92,10 +100,11 @@ class Logicoder_DB_PDO_Statement extends Logicoder_DB_Statement
      */
     public function results ( $iMode = DB_FETCH_ASSOC )
     {
-        /*
-            Return results.
-        */
-        return $this->oStmt->fetchAll($this->aResultModes[$iMode]);
+        if (is_null($this->aResults))
+        {
+            $this->aResults = $this->oStmt->fetchAll($this->aResultModes[$iMode]);
+        }
+        return $this->aResults;
     }
 
     /**
@@ -107,9 +116,11 @@ class Logicoder_DB_PDO_Statement extends Logicoder_DB_Statement
      */
     public function row ( $iMode = DB_FETCH_ASSOC )
     {
-        /*
-            Return result.
-        */
+        if (!is_null($this->aResults))
+        {
+            $row = each($this->aResults);
+            return $row[1];
+        }
         return $this->oStmt->fetch($this->aResultModes[$iMode]);
     }
 
@@ -122,7 +133,11 @@ class Logicoder_DB_PDO_Statement extends Logicoder_DB_Statement
     {
         if (substr_compare($this->oStmt->queryString, 'select', 0, 6, true) == 0)
         {
-            return count($this->results());
+            if (is_null($this->aResults))
+            {
+                $this->aResults = $this->results();
+            }
+            return count($this->aResults);
         }
         else
         {

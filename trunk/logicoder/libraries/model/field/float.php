@@ -36,5 +36,17 @@ class Logicoder_Model_Field_Float extends Logicoder_Model_Field_Abstract
      * Number of decimals.
      */
     public $decimals   = 2;
+
+    /**
+     *  Sanitizes a value for this field.
+     *
+     *  @param  mixed   $mValue     Value to sanitize
+     *
+     *  @return float   Sanitized value
+     */
+    public function sanitize ( $mValue )
+    {
+        return sanitize_float($mValue);
+    }
 }
 // END Logicoder_Model_Field_Float class

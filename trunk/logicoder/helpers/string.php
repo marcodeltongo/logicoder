@@ -21,6 +21,76 @@ define('STRING_HELPER', true);
 // -----------------------------------------------------------------------------
 
 /**
+ * Find first occurrence of a string (case-sensitive).
+ *
+ * Returns part of haystack string:
+ * - from start to the first occurrence of needle
+ * - from first occurrence of needle to the end
+ *
+ * @param   string  $sString    String to filter
+ * @param   mixed   $mNeedle    Break point
+ * @param   boolean $bFromStart Return from start or to end
+ *
+ * @return  string  Returns a part of passed string
+ */
+function str_part ( $sString, $mNeedle, $bFromStart = true )
+{
+    /*
+        Get position of needle.
+    */
+    if (is_string($mNeedle))
+    {
+        $mNeedle = strpos($sString, $mNeedle);
+        if ($mNeedle === false)
+        {
+            /*
+                Oops...not found !
+            */
+            return false;
+        }
+    }
+    return (bFromStart) ? substr($sString, 0, $mNeedle) : substr($sString, $mNeedle);
+}
+// END str_part function
+
+// -----------------------------------------------------------------------------
+
+/**
+ * Find first occurrence of a string (case-insensitive).
+ *
+ * Returns part of haystack string:
+ * - from start to the first occurrence of needle
+ * - from first occurrence of needle to the end
+ *
+ * @param   string  $sString    String to filter
+ * @param   mixed   $mNeedle    Break point
+ * @param   boolean $bFromStart Return from start or to end
+ *
+ * @return  string  Returns a part of passed string
+ */
+function str_ipart ( $sString, $mNeedle, $bFromStart = true )
+{
+    /*
+        Get position of needle.
+    */
+    if (is_string($mNeedle))
+    {
+        $mNeedle = stripos($sString, $mNeedle);
+        if ($mNeedle === false)
+        {
+            /*
+                Oops...not found !
+            */
+            return false;
+        }
+    }
+    return (bFromStart) ? substr($sString, 0, $mNeedle) : substr($sString, $mNeedle);
+}
+// END str_ipart function
+
+// -----------------------------------------------------------------------------
+
+/**
  * Reverse of nl2br.
  *
  * @param   string  $sString    String to filter
@@ -104,27 +174,32 @@ function reduce_double_slashes ( $sString )
  *
  * @return  string  Returns one string from the passed ones
  */
-function alternate ( /* ... */ )
+function alternate ( $mParams )
 {
-    static $iC;
+    static $aCounters = array();
     /*
         What has been passed ?
     */
-    switch (func_num_args())
+    if (func_num_args() > 1)
     {
-        case 0:
-            $iC = 0;
-            return '';
-        break;
-
-        case 1:
-            $aArgs = func_get_arg(0);
-        break;
-
-        default:
-            $aArgs = func_get_args();
+        /*
+            Get all the parameters as an array.
+        */
+        $aArgs = func_get_args();
     }
-    return $aArgs[($iC++ % count($aArgs))];
+    else
+    {
+        /*
+            Remove keys reindexing as 0, 1, 2, ...
+        */
+        $aArgs = array_values($mParams);
+    }
+    /*
+        Build static key.
+    */
+    $sKey = crc32(implode($aArgs));
+    $aCounters[$sKey] = isset($aCounters[$sKey]) ? ++$aCounters[$sKey] : 0;
+    return $aArgs[($aCounters[$sKey] % count($aArgs))];
 }
 // END alternate function
 

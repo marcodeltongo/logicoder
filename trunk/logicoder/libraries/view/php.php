@@ -21,7 +21,7 @@
 class Logicoder_View_PHP extends Logicoder_View_Abstract
 {
     /**
-     * Extract data and include view PHP code.
+     * Extract data and eval view PHP code.
      */
     public function _parse ( /* void */ )
     {
@@ -30,12 +30,12 @@ class Logicoder_View_PHP extends Logicoder_View_Abstract
         */
         extract($this->aData, EXTR_REFS);
         /*
-            Include the PHP view file.
+            Eval the PHP view source.
         */
         ob_start();
-        $bOK = include $this->sFilename;
+        $bOK = eval('?>' . $this->sSource);
         $this->sParsed = ob_get_clean();
-        return $bOK;
+        return ($bOK !== false);
     }
 }
 // END Logicoder_View_PHP class

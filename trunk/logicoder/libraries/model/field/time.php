@@ -27,5 +27,17 @@ class Logicoder_Model_Field_Time extends Logicoder_Model_Field_Date
      * Define column type.
      */
     public $db_type = 'T';
+
+    /**
+     *  Sanitizes a value for this field.
+     *
+     *  @param  mixed   $mValue     Value to sanitize
+     *
+     *  @return string  Sanitized value
+     */
+    public function sanitize ( $mValue )
+    {
+        return sanitize_isotime($mValue);
+    }
 }
 // END Logicoder_Model_Field_Time class

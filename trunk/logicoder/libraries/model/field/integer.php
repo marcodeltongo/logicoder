@@ -32,5 +32,17 @@ class Logicoder_Model_Field_Integer extends Logicoder_Model_Field_Abstract
      * Field is unsigned.
      */
     public $unsigned = false;
+
+    /**
+     *  Sanitizes a value for this field.
+     *
+     *  @param  mixed   $mValue     Value to sanitize
+     *
+     *  @return integer Sanitized value
+     */
+    public function sanitize ( $mValue )
+    {
+        return sanitize_int($mValue);
+    }
 }
 // END Logicoder_Model_Field_Integer class
