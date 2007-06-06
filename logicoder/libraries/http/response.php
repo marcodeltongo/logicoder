@@ -15,10 +15,10 @@
  *
  * @package     Logicoder
  * @subpackage  HTTP
- * @link        http://www.logicoder.com/documentation/response.html
+ * @link        http://www.logicoder.com/documentation/http_response.html
  * @author      Marco Del Tongo <info@marcodeltongo.com>
  */
-class Logicoder_Response extends Logicoder_OverArray
+class Logicoder_HTTP_Response extends Logicoder_OverArray
 {
     /**
      * Constructor.
@@ -337,6 +337,16 @@ class Logicoder_Response extends Logicoder_OverArray
      */
     public function __destruct ( /* void */ )
     {
+        /*
+            Close any inner output buffer.
+        */
+        while (ob_get_level() > 1)
+        {
+            ob_end_flush();
+        }
+        /*
+            Get our buffer.
+        */
         $sContent = ob_get_clean();
         /*
             Setup compression ?
@@ -352,4 +362,4 @@ class Logicoder_Response extends Logicoder_OverArray
         ob_end_flush();
     }
 }
-// END Logicoder_Response class
+// END Logicoder_HTTP_Response class

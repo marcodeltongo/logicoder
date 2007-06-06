@@ -33,10 +33,9 @@ require_once LOGICODER_ROOT . 'libraries/loader' . EXT;
  */
 class Logicoder extends Logicoder_ObjectRegistry implements Logicoder_iSingleton
 {
-    /**
-     * The singleton instance.
-     */
-    private static $oInstance = null;
+    // -------------------------------------------------------------------------
+    //  Singleton interface implementation.
+    // -------------------------------------------------------------------------
 
     /**
      *  Returns the singleton instance of the class.
@@ -45,13 +44,18 @@ class Logicoder extends Logicoder_ObjectRegistry implements Logicoder_iSingleton
      */
     public static function instance ( /* void */ )
     {
-        if (self::$oInstance === null)
+        static $oInstance = null;
+        if (is_null($oInstance))
         {
-            self::$oInstance = new Logicoder();
-            self::$oInstance->__setup();
+            $oInstance = new Logicoder();
+            $oInstance->__run();
         }
-        return self::$oInstance;
+        return $oInstance;
     }
+
+    // -------------------------------------------------------------------------
+    //  Magic methods implementation.
+    // -------------------------------------------------------------------------
 
     /**
      * Overload magic property getter method, returns object or throw exception.
@@ -108,10 +112,14 @@ class Logicoder extends Logicoder_ObjectRegistry implements Logicoder_iSingleton
         return $oReturn;
     }
 
+    // -------------------------------------------------------------------------
+    //  Do the job.
+    // -------------------------------------------------------------------------
+
     /**
      * The *real* constructor, we need this to avoid $this circular reference.
      */
-    private function __setup ( /* void */ )
+    private function __run ( /* void */ )
     {
         /*
             Define we are setup.
@@ -127,7 +135,7 @@ class Logicoder extends Logicoder_ObjectRegistry implements Logicoder_iSingleton
         /*
             Load some useful helpers.
         */
-        $this->load->helper(array('Array', 'String', 'Html', 'File', 'Debug'));
+        $this->load->helper(array('Array', 'String', 'Html', 'File', 'Debug', 'Sanitize', 'Validate'));
         /*
             Setup error and exception handler.
         */
@@ -146,13 +154,23 @@ class Logicoder extends Logicoder_ObjectRegistry implements Logicoder_iSingleton
         */
         $this->register('benchmark', $this->load->library('Benchmark', true, (array)BENCHMARK_STARTUP));
         /*
-            Setup request object.
+            Setup HTTP request and response objects.
         */
-        $this->register('request', $this->load->library('HttpRequest', true));
+        $sInputFilter = $this->load->library('InputFilter');
+        $bPreprocess = REQUEST_XSS_FILTERING and !REQUEST_LAZY_FILTERING;
+        $this->register('request', $this->load->library('HTTP_Request', true, array($sInputFilter, $bPreprocess)));
+        $this->register('response', $this->load->library('HTTP_Response', true));
         /*
-            Setup response object.
+            Setup session object.
         */
-        $this->register('response', $this->load->library('HttpResponse', true));
+        $this->register('session', $this->load->library('HTTP_Session', true));
+        $aCookieParams = array();
+        $aCookieParams['lifetime'] = defined('SESSION_LIFETIME') ? SESSION_LIFETIME : 0;
+        $aCookieParams['path'] = defined('SESSION_PATH') ? SESSION_PATH : '/';
+        $aCookieParams['domain'] = defined('SESSION_DOMAIN') ? SESSION_DOMAIN : '';
+        $aCookieParams['secure'] = defined('SESSION_SECURE') ? SESSION_SECURE : false;
+        $aCookieParams['httponly'] = defined('SESSION_HTTPONLY') ? SESSION_HTTPONLY : true;
+        $this->session->start(PROJECT_NAME, $aCookieParams);
         /*
             Setup application object.
         */
