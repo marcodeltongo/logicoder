@@ -15,11 +15,16 @@
  *
  * @package     Logicoder
  * @subpackage  HTTP
- * @link        http://www.logicoder.com/documentation/request.html
+ * @link        http://www.logicoder.com/documentation/http_request.html
  * @author      Marco Del Tongo <info@marcodeltongo.com>
  */
-class Logicoder_Request
+class Logicoder_HTTP_Request extends Logicoder_OverArray
 {
+    /**
+     * HTTP Request method.
+     */
+    private $method;
+
     /**#@+
      * HTTP DATA OBJECTS
      */
@@ -28,40 +33,71 @@ class Logicoder_Request
     public $META;
     public $FILES;
     public $COOKIE;
-    public $SESSION;
     /**#@-*/
 
     /**
      * Constructor.
+     *
+     * @param   string  $sClass         Filter class name
+     * @param   boolean $bPreprocess    Preprocess or lazy ?
      */
-    public function __construct ( /* void */ )
+    public function __construct ( $sClass, $bPreprocess )
     {
         /*
-            Load Logicoder_InputFilter dependency.
-        */
-        $sClass = 'Logicoder_InputFilter';
-        if (class_exists('Logicoder'))
-        {
-            $sClass = Logicoder::instance()->load->library('InputFilter');
-        }
-        else
-        {
-            require('inputfilter.php');
-        }
-        /*
-            Pre-process everything ?
-        */
-        $bPreprocess = (REQUEST_XSS_FILTERING and !REQUEST_LAZY_FILTERING);
-        /*
-            Setup input filters.
+            Setup input filters, we initialize containers also for empty arrays.
         */
         $this->GET     = new $sClass('_GET',        $bPreprocess);
         $this->POST    = new $sClass('_POST',       $bPreprocess);
         $this->META    = new $sClass('_SERVER',     $bPreprocess);
         $this->FILES   = new $sClass('_FILES',      $bPreprocess);
         $this->COOKIE  = new $sClass('_COOKIE',     $bPreprocess);
-        $this->SESSION = new $sClass('_SESSION',    $bPreprocess);
+        /*
+            Method ?
+        */
+        $this->method = $this->META['REQUEST_METHOD'];
+        /*
+            Data ?
+        */
+        parent::__construct($this->{$this->method});
     }
+
+    // -------------------------------------------------------------------------
+    //  Request informations.
+    // -------------------------------------------------------------------------
+
+    /**
+     * Returns request method.
+     *
+     * @return  string  Request method
+     */
+    public function method ( /* void */ )
+    {
+        return $this->method;
+    }
+
+    /**
+     * Returns if this is an AJAX request.
+     *
+     * @return  boolean True if called with XMLHttpRequest, false otherwise
+     */
+    public function ajax ( /* void */ )
+    {
+        return $_SERVER['HTTP_X_REQUESTED_WITH'] === "XMLHttpRequest";
+    }
+
+    /**
+     * Returns true if the request came from a secure connection.
+     *
+     * @return  boolean Returns true if the request came from a secure connection
+     */
+    public function secure ( /* void */ )
+    {
+        return array_element($this->SERVER, 'HTTPS', false) !== false;
+    }
+
+    // -------------------------------------------------------------------------
+    //  Data getters.
+    // -------------------------------------------------------------------------
 
     /**
      * Returns GET data.
@@ -127,40 +163,5 @@ class Logicoder_Request
     {
         return (isset($this->COOKIE[$sKey])) ? $this->COOKIE[$sKey] : $mDefault;
     }
-
-    /**
-     * Returns SESSION data.
-     *
-     * @param   string  $sKey       The name/key string
-     * @param   mixed   $mDefault   Default return value
-     *
-     * @return  mixed   HTTP SESSION value, default value or null
-     */
-    public function SESSION ( $sKey, $mDefault = null )
-    {
-        return (isset($this->SESSION[$sKey])) ? $this->SESSION[$sKey] : $mDefault;
-    }
-
-    /**
-     * Returns true if data exists.
-     *
-     * @param   string  $sKey       The name/key string
-     *
-     * @return  boolean Returns true if data exists
-     */
-    public function has ( $sKey )
-    {
-        return isset($this->POST[$sKey]) or isset($this->GET[$sKey]);
-    }
-
-    /**
-     * Returns true if the request came from a secure connection.
-     *
-     * @return  boolean Returns true if the request came from a secure connection
-     */
-    public function secure ( /* void */ )
-    {
-        return array_element($this->SERVER, 'HTTPS', false) !== false;
-    }
 }
-// END Logicoder_Request class
+// END Logicoder_HTTP_Request class

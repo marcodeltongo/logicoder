@@ -18,7 +18,7 @@
  * @link        http://www.logicoder.com/documentation/overarray.html
  * @author      Marco Del Tongo <info@marcodeltongo.com>
  */
-class Logicoder_OverArray implements ArrayAccess, IteratorAggregate
+class Logicoder_OverArray implements ArrayAccess, IteratorAggregate, Countable
 {
     /**
      * Internal data stack.
@@ -30,12 +30,22 @@ class Logicoder_OverArray implements ArrayAccess, IteratorAggregate
      *
      * @param   array   $aData      Initial data to import
      */
-    public function __construct ( array $aData = null )
+    public function __construct ( &$aData = null )
     {
-        if (!is_null($aData))
+        if (!is_null($aData) and (is_array($aData) or is_object($aData)))
         {
             $this->aData = $aData;
         }
+    }
+
+    /**
+     * Countable interface implementation.
+     *
+     * @return  integer Total number of values stored
+     */
+    public function count ( /* void */ )
+    {
+        return count($this->aData);
     }
 
     /**

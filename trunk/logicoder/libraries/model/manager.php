@@ -30,11 +30,6 @@ class Logicoder_Model_Manager implements Logicoder_iSingleton, ArrayAccess
      */
     protected $aRelations   = array();
 
-    /**
-     * The singleton instance.
-     */
-    private static $oInstance = null;
-
     // -------------------------------------------------------------------------
     //  Singleton interface implementation.
     // -------------------------------------------------------------------------
@@ -51,11 +46,12 @@ class Logicoder_Model_Manager implements Logicoder_iSingleton, ArrayAccess
      */
     public static function instance ( /* void */ )
     {
-        if (self::$oInstance === null)
+        static $oInstance = null;
+        if (is_null($oInstance))
         {
-            self::$oInstance = new Logicoder_Model_Manager();
+            $oInstance = new Logicoder_Model_Manager();
         }
-        return self::$oInstance;
+        return $oInstance;
     }
 
     // -------------------------------------------------------------------------

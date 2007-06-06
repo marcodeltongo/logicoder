@@ -23,7 +23,7 @@ class Logicoder_InputFilter extends Logicoder_OverArray
     /**
      * Superglobal source array.
      */
-    protected $aSource;
+    protected $aSource = array();
 
     // -------------------------------------------------------------------------
 
@@ -36,20 +36,12 @@ class Logicoder_InputFilter extends Logicoder_OverArray
     public function __construct ( $sSource, $bPreprocess = false )
     {
         /*
-            Load sanitize helper dependency.
-        */
-        if (class_exists('Logicoder'))
-        {
-            Logicoder::instance()->load->helper('Sanitize');
-        }
-        else
-        {
-            require('sanitize.php');
-        }
-        /*
             Get source
         */
-        $this->aSource = (isset($GLOBALS[$sSource])) ? $GLOBALS[$sSource] : array();
+        if (isset($GLOBALS[$sSource]))
+        {
+            $this->aSource =& $GLOBALS[$sSource];
+        }
         /*
             Pre-process data if required
         */
