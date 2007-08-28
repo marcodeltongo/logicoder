@@ -82,7 +82,7 @@ class Logicoder_HTTP_Session implements Logicoder_iSingleton, ArrayAccess, Itera
         /*
             Check if we need to regenerate session.
         */
-        if ($_SESSION['__initialized__'] !== true)
+        if (!isset($_SESSION['__initialized__']) or $_SESSION['__initialized__'] !== true)
         {
             session_regenerate_id(true);
             $_SESSION['__initialized__'] = true;

@@ -32,6 +32,17 @@ if (!defined('ARRAY_HELPER'))
         require('array.php');
     }
 }
+if (!defined('STRING_HELPER'))
+{
+    if (defined('LOGICODER'))
+    {
+        Logicoder::instance()->load->helper('String');
+    }
+    else
+    {
+        require('string.php');
+    }
+}
 /**#@-*/
 
 // -----------------------------------------------------------------------------
@@ -287,6 +298,8 @@ function ol_a ( array $aData, $sId = null, $mCls = null )
 /**
  * Builds a table row.
  *
+ * If the data array is associative, keys will be used as cells classes.
+ *
  * @param   array   $aData      Source data array
  * @param   string  $sId        The ID attribute
  * @param   mixed   $mCls       String or array of classes
@@ -297,9 +310,10 @@ function ol_a ( array $aData, $sId = null, $mCls = null )
 function table_row ( array $aData, $sId = null, $mCls = null, $sCellTag = 'td' )
 {
     $html = '';
-    foreach ($aData as $item)
+    foreach ($aData as $key => $item)
     {
-        $html .= "<$sCellTag>$item</$sCellTag>";
+        $sCls = (is_assoc($aData)) ? $key : $mCls;
+        $html .= _tag($sCellTag, $item, null, $sCls);
     }
     return _tag('tr', $html, $sId, $mCls) . "\n";
 }
@@ -319,7 +333,7 @@ function table_row ( array $aData, $sId = null, $mCls = null, $sCellTag = 'td' )
 function table_rows ( array $aData, $mCls = null, $sCellTag = 'td' )
 {
     $html = '';
-    foreach ($aData as $item)
+    foreach ($aData as $key => $item)
     {
         $html .= table_row($item, null, $mCls, $sCellTag);
     }
@@ -353,7 +367,7 @@ function table ( $sCaption = null, array $aHead = null, array $aBody = null,
     /*
         Start table.
     */
-    $html = "<table$sId$mCls>\n";
+    $html = "<table$sId$mCls cellspacing='0' cellpadding='0'>\n";
     if (!is_null($sCaption))
     {
         $html .= "<caption>$sCaption</caption>\n";
