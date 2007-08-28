@@ -18,11 +18,16 @@
     The defaults try to autodetect as much as possible but, for speed sake,
     you should change them accordingly to your live server once deployed.
 
-    Take a look at http://www.logicoder.com/documentation/configuration.html to
-    see which settings are available and how they change behaviours.
+    Take a look at http://www.logicoder.com/documentation/configuration.html
+	to see which settings are available and how they change behaviours.
 */
 
 // -----------------------------------------------------------------------------
+
+/**
+ * The project name.
+ */
+define('PROJECT_NAME', 'A Logicoder Project');
 
 /**
  * Secret Key.
@@ -32,12 +37,12 @@
 define('SECRET_KEY', 'abracadabra');
 
 /**
- * Development or public ?
+ * Development or live ?
  *
  * This setting is useful to manage different settings between development and
  * deployment servers like database connections or directories location.
  */
-define('DEVELOPMENT', true); #($_SERVER['HTTP_HOST'] == 'localhost'));
+define('DEVELOPMENT', true);
 
 /**
  * Run in debug mode or live mode ?
@@ -47,10 +52,6 @@ define('DEVELOPMENT', true); #($_SERVER['HTTP_HOST'] == 'localhost'));
 define('DEBUG', true);
 
 // -----------------------------------------------------------------------------
-/**
- * The project name.
- */
-define('PROJECT_NAME', 'A Logicoder Project');
 
 /**
  * Absolute path to the base/root directory.
@@ -78,19 +79,23 @@ define('APPS_ROOT', ROOT . 'apps/');
 define('PUBLIC_ROOT', ROOT);
 
 /**
+ * Absolute path to the directory that holds media for this project.
+ */
+define('MEDIA_ROOT', PUBLIC_ROOT . 'media/');
+
+// -----------------------------------------------------------------------------
+
+/**
  * The public path to the project index file.
+ * AUTODETECT: 'http://' . $_SERVER['HTTP_HOST'] . str_replace('index' . EXT, '', $_SERVER['SCRIPT_NAME'])
  */
 define('PROJECT_URL', 'http://' . $_SERVER['HTTP_HOST'] . str_replace('index' . EXT, '', $_SERVER['SCRIPT_NAME']));
 
 /**
  * The index file, leave blank if mod_rewrite is used.
+ * AUTODETECT: basename(__FILE__)
  */
 define('PROJECT_INDEX', basename(__FILE__));
-
-/**
- * Absolute path to the directory that holds media for this project.
- */
-define('MEDIA_ROOT', PUBLIC_ROOT . 'media/');
 
 /**
  * The base URL that handles the media served from MEDIA_ROOT.

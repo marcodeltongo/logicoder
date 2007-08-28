@@ -31,7 +31,7 @@ define('STRING_HELPER', true);
  * @param   mixed   $mNeedle    Break point
  * @param   boolean $bFromStart Return from start or to end
  *
- * @return  string  Returns a part of passed string
+ * @return  string  Returns a part of passed string or all if needle not found
  */
 function str_part ( $sString, $mNeedle, $bFromStart = true )
 {
@@ -43,13 +43,10 @@ function str_part ( $sString, $mNeedle, $bFromStart = true )
         $mNeedle = strpos($sString, $mNeedle);
         if ($mNeedle === false)
         {
-            /*
-                Oops...not found !
-            */
-            return false;
+            return $sString;
         }
     }
-    return (bFromStart) ? substr($sString, 0, $mNeedle) : substr($sString, $mNeedle);
+    return ($bFromStart) ? substr($sString, 0, $mNeedle) : substr($sString, $mNeedle);
 }
 // END str_part function
 
@@ -66,7 +63,7 @@ function str_part ( $sString, $mNeedle, $bFromStart = true )
  * @param   mixed   $mNeedle    Break point
  * @param   boolean $bFromStart Return from start or to end
  *
- * @return  string  Returns a part of passed string
+ * @return  string  Returns a part of passed string or all if needle not found
  */
 function str_ipart ( $sString, $mNeedle, $bFromStart = true )
 {
@@ -78,13 +75,10 @@ function str_ipart ( $sString, $mNeedle, $bFromStart = true )
         $mNeedle = stripos($sString, $mNeedle);
         if ($mNeedle === false)
         {
-            /*
-                Oops...not found !
-            */
-            return false;
+            return $sString;
         }
     }
-    return (bFromStart) ? substr($sString, 0, $mNeedle) : substr($sString, $mNeedle);
+    return ($bFromStart) ? substr($sString, 0, $mNeedle) : substr($sString, $mNeedle);
 }
 // END str_ipart function
 

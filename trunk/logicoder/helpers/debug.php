@@ -36,8 +36,60 @@ if (!defined('HTML_HELPER'))
 
 // -----------------------------------------------------------------------------
 
+define('DUMP_CSS_STYLES', "
+    <style type='text/css'>
+        table.dump {
+            width:          240px;
+            font-family:    Consolas, 'Courier New', Courier, monospace;
+            color:          #000;
+            font-size:      10px;
+            margin:         0 auto 4px auto;
+            border:         1px solid #edd400;
+        }
+        table.dump caption {
+            background:     #edd400;
+            margin:         0 auto;
+            font-weight:    bold;
+            text-align:     center;
+            padding:        2px 4px 0 4px;
+        }
+        table.dump span {
+            font-style:     italic;
+        }
+        table.dump td {
+            background:     #fce94f;
+            border:         1px solid #edd400;
+            margin:         0px;
+            padding:        2px 4px;
+            text-align:     center;
+        }
+        table.dump td.value {
+            background:     #fff;
+            text-align:     left;
+        }
+        table.dump table {
+            margin:         0 auto;
+        }
+        table.dump.array {
+            border:         1px solid #73d216;
+        }
+        table.dump.array caption {
+            background:     #73d216;
+        }
+        table.dump.array td {
+            background:     #8ae234;
+            border:         1px solid #edd400;
+        }
+        table.dump.array td.value {
+            background:     #fff;
+        }
+    </style>
+");
+
+// -----------------------------------------------------------------------------
+
 /**
- * Pretty prints memory usage.
+ * Returns pretty memory usage.
  */
 function memory_usage ( /* void */ )
 {
@@ -52,46 +104,13 @@ function memory_usage ( /* void */ )
 // -----------------------------------------------------------------------------
 
 /**
- * Simple wrapper which adds "pre" tags to var_export().
- *
- * @param   mixed   $parameter  Zero or more parameters to be exported
- */
-function pre_dump ( /* ... */ )
-{
-    foreach (func_get_args() as $mVar)
-    {
-        echo '<pre>' . var_export($mVar, true) . '</pre>';
-    }
-}
-// END pre_dump function
-
-// -----------------------------------------------------------------------------
-
-/**
- * Simple wrapper which adds "pre" tags to var_export() and exits.
- *
- * @param   mixed   $parameter  Zero or more parameters to be exported
- */
-function pre_dump_exit ( /* ... */ )
-{
-    foreach (func_get_args() as $mVar)
-    {
-        echo '<pre>' . var_export($mVar, true) . '</pre>';
-    }
-    exit();
-}
-// END pre_dump_exit function
-
-// -----------------------------------------------------------------------------
-
-/**
  * Returns variable type.
  *
- * @param   mixed   $mVar   Variable to check
+ * @param   mixed   $mVar   Variable to check (by reference)
  *
  * @return  string  The variable type
  */
-function get_type ( $mVar )
+function get_type ( &$mVar )
 {
     if (is_null($mVar))
     {
@@ -148,14 +167,9 @@ function get_type ( $mVar )
 // -----------------------------------------------------------------------------
 
 /**
- * Returns a variable name.
- *
- * @param   mixed   $mVar       Variable to search
- * @param   string  $sFunction  Function name to scan
- *
- * @return  string  Var name if found
+ * @ignore
  */
-function var_name ( $mVar, $sFunction = 'var_name' )
+function _dump_call ( $sFunction = '_dump_call' )
 {
     $aBT = array_reverse(debug_backtrace());
     $aIn = array('include', 'include_once', 'require', 'require_once');
@@ -182,7 +196,7 @@ function var_name ( $mVar, $sFunction = 'var_name' )
             Find function call.
         */
         preg_match('|\b'.$sFunction.'\s*\(\s*([^()]+)\s*|', $sCode, $aMatches);
-        return (isset($aMatches[1])) ? $aMatches[1] : $sCode;
+        return (isset($aMatches[1])) ? str_part($aMatches[1] , ',') : $sCode;
     }
     return '';
 }
@@ -191,70 +205,110 @@ function var_name ( $mVar, $sFunction = 'var_name' )
 // -----------------------------------------------------------------------------
 
 /**
+ * @ignore
+ */
+function _dump_scalar ( &$mVar )
+{
+    /*
+        Manage boolean conversion.
+    */
+    if (is_bool($mVar))
+    {
+        $sVal = ($mVar) ? 'true' : 'false';
+    }
+    elseif (is_string($mVar))
+    {
+        $sVal = "'" . $mVar . "'";
+    }
+    else
+    {
+        $sVal = (string)$mVar;
+    }
+    return $sVal;
+}
+
+// -----------------------------------------------------------------------------
+
+/**
  * Dumps with details.
  *
- * @param   mixed   $mVar       Variable to dump
+ * @param   mixed   $mVar       Variable to dump (by reference)
  * @param   boolean $bReturn    Whether to return or output
  *
  * @return  string  If $bReturn == true
  */
-function dump ( $mVar, $bReturn = false )
+function dump ( &$mVar, $bReturn = false )
 {
-    $sOutput = '';
+    $sCaption = _dump_call('dump') . ' <span>[' . get_type($mVar) . ']</span>';
     if (is_scalar($mVar))
     {
-        /*
-            Prepare header.
-        */
-        $aData = array(array(var_name($mVar, 'dump')));
-        /*
-            Get value.
-        */
-        ob_start();
-        debug_zval_dump($mVar);
-        $aData[] = array('<pre>' . ob_get_clean() . '</pre>');
-        /*
-            Dump table.
-        */
-        $sOutput = array2table($aData, null, 'dump', true);
+        $sVal = _dump_scalar($mVar);
+        if ($bReturn)
+        {
+            return table(null, null, array(array($sVal)), null, null, 'dump');
+        }
+        echo table($sCaption, null, array(array($sVal)), null, null, 'dump');
     }
     else
     {
-        /*
-            Prepare header.
-        */
-        $aData = array(array(var_name($mVar, 'dump')));
-        /*
-            Get value.
-        */
-        ob_start();
-        debug_zval_dump($mVar);
-        $aData[] = array('<pre>' . ob_get_clean() . '</pre>');
-        /*
-            Dump table.
-        */
-        $sOutput = array2table($aData, null, 'dump', true);
+        $aData = array();
+        foreach ($mVar as $name => $value)
+        {
+            if (is_scalar($value))
+            {
+                $sVal = _dump_scalar($value);
+            }
+            elseif ($mVar === $value)
+            {
+                $sVal = '* RECURSION *'; // PHP THROWS "Fatal error: Nesting level too deep - recursive dependency?"
+            }
+            else
+            {
+                $sVal = dump($value, true);
+            }
+            $aData[] = array($name . ' <span>[' . get_type($value) . ']</span>',
+                             'value' => $sVal);
+        }
+        if ($bReturn)
+        {
+            return table(null, null, $aData, null, null, 'dump ' . get_type($mVar));
+        }
+        echo table($sCaption, null, $aData, null, null, 'dump ' . get_type($mVar));
     }
-    if ($bReturn)
-    {
-        return $sOutput;
-    }
-    echo $sOutput;
 }
 // END dump function
-/*
-dump(0);
-dump(true);
-dump(false);
+
+// -----------------------------------------------------------------------------
+
+echo DUMP_CSS_STYLES;
+
+$test = 0;
+dump($test, false);
+dump($test = true);
+dump($test = 3.14);
 
 $test = 'YEP!';
 dump($test);
 
+$variable = array(
+    true,
+    "first"=> 1,
+    "second",
+    "third"=>array(
+        "inner third 1",
+        "inner third 2"=>"yeah",
+        array('pippo')),
+    "fourth");
+#$variable[] = $variable;
+dump($variable);
+dump($_REQUEST);
+dump($_REQUEST['logicoder']);
+
 class Vegetable {
 
-   var $edible;
-   var $color;
-   var $test = array(1, 2, 3, array('0'));
+   public $edible;
+   protected $color;
+   private $test = array(1, 2, 3, array('0'));
    var $t;
 
    function Vegetable($edible, $color="green") {
@@ -274,4 +328,5 @@ class Vegetable {
 }
 $variable=new Vegetable("spinach");
 dump($variable);
-*/
+dump(object_to_array($variable));
+print_r($variable);

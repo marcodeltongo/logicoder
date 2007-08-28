@@ -101,7 +101,14 @@ function object_to_array ( $oSrc )
     $aRet = array();
     foreach (get_object_vars($oSrc) as $k => $v)
     {
-        if (is_scalar($v))
+        if (is_object($v))
+        {
+            if ($oSrc !== $v)
+            {
+                $aRet[$k] = object_to_array($oSrc);
+            }
+        }
+        else
         {
             $aRet[$k] = $v;
         }

@@ -17,7 +17,7 @@ define('BENCHMARK_STARTUP', microtime(true));
 
 /**
  * Define the file extension used for PHP files.
- * DEFAULT: '.' . pathinfo(__FILE__, PATHINFO_EXTENSION)
+ * AUTODETECT: '.' . pathinfo(__FILE__, PATHINFO_EXTENSION)
  */
 define('EXT', '.' . pathinfo(__FILE__, PATHINFO_EXTENSION));
 
