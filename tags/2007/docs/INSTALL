@@ -1,0 +1,67 @@
+To install... TO BE WRITTEN !
+
+For more detailed instructions, see docs/manual/install.html
+
+================================================================================
+
+= EXAMPLE OF SUGGESTED DIRECTORY STRUCTURE FOR DEVELOPMENT =
+
+/                                   <--- ROOT and PUBLIC_ROOT
+    apps/                           <--- APPS_ROOT
+        ...
+    data/                           <--- DATA_ROOT
+        ...
+    docs/
+        ...
+    logicoder/                      <--- LOGICODER_ROOT
+        libraries/
+        helpers/
+        ...
+    media/                          <--- MEDIA_ROOT
+        ...
+    tests/
+        ...
+    .htaccess
+    index.php
+    settings.php
+
+================================================================================
+
+= EXAMPLE OF RECOMMENDED DIRECTORY STRUCTURE FOR LIVE DEPLOYMENT =
+
+/                                   <--- ROOT (usually a /home/* folder)
+    apps/                           <--- APPS_ROOT
+        common/
+        default/
+            /controllers/
+            /models/
+            /views/
+            /libraries/
+            /i18n/
+                /en/
+                /es/
+                /it/
+        ...
+    data/                           <--- DATA_ROOT (write access needed)
+        cache/
+        logs/
+        upload/
+        ...
+    logicoder/                      <--- LOGICODER_ROOT
+        libraries/
+        helpers/
+        ...
+    public_html/                    <--- PUBLIC_ROOT
+        .htaccess
+        index.php
+        settings.php
+        media/                      <--- MEDIA_ROOT
+            css/
+            download/
+            images/
+            js/
+            photos/
+            swf/
+            thumbs/
+            videos/
+            ...
